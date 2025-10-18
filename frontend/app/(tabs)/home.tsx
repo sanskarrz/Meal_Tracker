@@ -8,13 +8,15 @@ import {
   RefreshControl,
   Alert,
   Image,
+  TextInput,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 
-// Use relative URL for web proxy
 const API_URL = '';
 
 interface FoodEntry {
@@ -27,6 +29,7 @@ interface FoodEntry {
   image_base64?: string;
   entry_type: string;
   timestamp: string;
+  serving_size?: string;
 }
 
 interface DailyStats {
@@ -40,14 +43,27 @@ interface DailyStats {
   entries_count: number;
 }
 
+interface QuickSearchResult {
+  food_name: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fats: number;
+  serving_size?: string;
+}
+
 export default function HomeScreen() {
   const { user, token } = useAuth();
   const [stats, setStats] = useState<DailyStats | null>(null);
   const [entries, setEntries] = useState<FoodEntry[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [quickSearchFood, setQuickSearchFood] = useState('');
-  const [quickSearching, setQuickSearching] = useState(false);
+  
+  // Quick search states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResult, setSearchResult] = useState<QuickSearchResult | null>(null);
+  const [searching, setSearching] = useState(false);
+  const [showSearchModal, setShowSearchModal] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -70,6 +86,25 @@ export default function HomeScreen() {
     } finally {
       setLoading(false);
       setRefreshing(false);
+    }
+  };
+
+  const quickSearchFood = async () => {
+    if (!searchQuery.trim()) return;
+    
+    setSearching(true);
+    try {
+      const response = await axios.post(
+        `${API_URL}/api/food/search`,
+        { query: searchQuery },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setSearchResult(response.data);
+      setShowSearchModal(true);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to search food');
+    } finally {
+      setSearching(false);
     }
   };
 
@@ -110,6 +145,28 @@ export default function HomeScreen() {
             <Text style={styles.date}>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</Text>
           </View>
           <Ionicons name="fitness" size={32} color="white" />
+        </View>
+        
+        {/* Quick Search Bar */}
+        <View style={styles.searchContainer}>
+          <View style={styles.searchBar}>
+            <Ionicons name="search" size={20} color="#999" />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Quick check calories..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              onSubmitEditing={quickSearchFood}
+              placeholderTextColor="#999"
+            />
+            {searching ? (
+              <ActivityIndicator size="small" color="#36B37E" />
+            ) : (
+              <TouchableOpacity onPress={quickSearchFood}>
+                <Ionicons name="arrow-forward-circle" size={24} color="#36B37E" />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       </LinearGradient>
 
@@ -175,6 +232,9 @@ export default function HomeScreen() {
                 )}
                 <View style={styles.entryInfo}>
                   <Text style={styles.entryName}>{entry.food_name}</Text>
+                  {entry.serving_size && (
+                    <Text style={styles.servingSize}>{entry.serving_size}</Text>
+                  )}
                   <Text style={styles.entryDetails}>
                     {new Date(entry.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                   </Text>
@@ -196,6 +256,56 @@ export default function HomeScreen() {
           ))
         )}
       </ScrollView>
+
+      {/* Quick Search Result Modal */}
+      <Modal
+        visible={showSearchModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowSearchModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Nutrition Info</Text>
+              <TouchableOpacity onPress={() => setShowSearchModal(false)}>
+                <Ionicons name="close-circle" size={28} color="#999" />
+              </TouchableOpacity>
+            </View>
+            
+            {searchResult && (
+              <View style={styles.resultContainer}>
+                <Text style={styles.resultFoodName}>{searchResult.food_name}</Text>
+                {searchResult.serving_size && (
+                  <Text style={styles.resultServing}>{searchResult.serving_size}</Text>
+                )}
+                
+                <View style={styles.resultCalories}>
+                  <Text style={styles.resultCaloriesValue}>{searchResult.calories}</Text>
+                  <Text style={styles.resultCaloriesLabel}>calories</Text>
+                </View>
+                
+                <View style={styles.resultMacros}>
+                  <View style={styles.resultMacroItem}>
+                    <Text style={styles.resultMacroValue}>{searchResult.protein}g</Text>
+                    <Text style={styles.resultMacroLabel}>Protein</Text>
+                  </View>
+                  <View style={styles.resultMacroItem}>
+                    <Text style={styles.resultMacroValue}>{searchResult.carbs}g</Text>
+                    <Text style={styles.resultMacroLabel}>Carbs</Text>
+                  </View>
+                  <View style={styles.resultMacroItem}>
+                    <Text style={styles.resultMacroValue}>{searchResult.fats}g</Text>
+                    <Text style={styles.resultMacroLabel}>Fats</Text>
+                  </View>
+                </View>
+                
+                <Text style={styles.resultNote}>This is for reference only. Go to Add tab to log this food.</Text>
+              </View>
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -214,6 +324,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 16,
   },
   greeting: {
     fontSize: 24,
@@ -224,6 +335,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.8)',
     marginTop: 4,
+  },
+  searchContainer: {
+    marginTop: 8,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    height: 48,
+    gap: 12,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333',
   },
   content: {
     flex: 1,
@@ -363,7 +491,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#333',
-    marginBottom: 4,
+    marginBottom: 2,
+  },
+  servingSize: {
+    fontSize: 12,
+    color: '#36B37E',
+    fontWeight: '500',
+    marginBottom: 2,
   },
   entryDetails: {
     fontSize: 12,
@@ -393,5 +527,82 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     padding: 4,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 24,
+    maxHeight: '70%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  resultContainer: {
+    alignItems: 'center',
+  },
+  resultFoodName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  resultServing: {
+    fontSize: 16,
+    color: '#36B37E',
+    fontWeight: '500',
+    marginBottom: 16,
+  },
+  resultCalories: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  resultCaloriesValue: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#36B37E',
+  },
+  resultCaloriesLabel: {
+    fontSize: 16,
+    color: '#999',
+  },
+  resultMacros: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginBottom: 24,
+  },
+  resultMacroItem: {
+    alignItems: 'center',
+  },
+  resultMacroValue: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#333',
+  },
+  resultMacroLabel: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 4,
+  },
+  resultNote: {
+    fontSize: 14,
+    color: '#999',
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 });
