@@ -69,9 +69,13 @@ class FoodAnalysisRequest(BaseModel):
 
 class ManualFoodRequest(BaseModel):
     food_name: str
+    serving_size: Optional[str] = "1 serving"
 
 class RecipeAnalysisRequest(BaseModel):
     recipe_text: str
+
+class QuickSearchRequest(BaseModel):
+    query: str
 
 class FoodEntryResponse(BaseModel):
     id: str
