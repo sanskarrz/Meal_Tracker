@@ -46,6 +46,8 @@ export default function HomeScreen() {
   const [entries, setEntries] = useState<FoodEntry[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [quickSearchFood, setQuickSearchFood] = useState('');
+  const [quickSearching, setQuickSearching] = useState(false);
 
   useEffect(() => {
     loadData();
