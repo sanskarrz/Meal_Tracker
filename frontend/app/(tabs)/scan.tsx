@@ -14,9 +14,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
-import Constants from 'expo-constants';
 
-const API_URL = Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+const API_URL = '';
 
 export default function ScanScreen() {
   const [facing, setFacing] = useState<'back' | 'front'>('back');
