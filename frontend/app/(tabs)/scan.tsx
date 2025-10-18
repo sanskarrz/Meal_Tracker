@@ -408,6 +408,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#333',
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+  resultServing: {
+    fontSize: 14,
+    color: '#36B37E',
+    fontWeight: '500',
     marginBottom: 12,
     textAlign: 'center',
   },
@@ -427,5 +434,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999',
     marginTop: 4,
+  },
+  resultAddedNote: {
+    fontSize: 14,
+    color: '#36B37E',
+    textAlign: 'center',
+    marginTop: 12,
+    fontWeight: '500',
   },
 });
