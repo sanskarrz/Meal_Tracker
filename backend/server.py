@@ -251,6 +251,24 @@ async def get_me(current_user = Depends(get_current_user)):
     }
 
 # Food Analysis Routes
+@app.post("/api/food/search")
+async def search_food(request: QuickSearchRequest, current_user = Depends(get_current_user)):
+    """Quick search for food items - returns suggestions without saving"""
+    try:
+        # Use Gemini to get food suggestions
+        nutrition_data = await analyze_food_with_gemini(text_query=request.query)
+        
+        # Return nutrition info without saving
+        return {
+            "food_name": nutrition_data["food_name"],
+            "calories": nutrition_data["calories"],
+            "protein": nutrition_data.get("protein", 0),
+            "carbs": nutrition_data.get("carbs", 0),
+            "fats": nutrition_data.get("fats", 0)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error searching food: {str(e)}")
+
 @app.post("/api/food/analyze-image")
 async def analyze_food_image(request: FoodAnalysisRequest, current_user = Depends(get_current_user)):
     """Analyze food from image using Gemini Vision"""
