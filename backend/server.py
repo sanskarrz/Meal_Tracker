@@ -148,7 +148,7 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
         
         # Prepare prompt
         if image_base64 and text_query:
-            prompt = f"{text_query}. Return ONLY a JSON object with: food_name (string), calories (number), protein (number in grams), carbs (number in grams), fats (number in grams), confidence (string: high/medium/low)."
+            prompt = f"{text_query}. Return ONLY a JSON object with: food_name (string), calories (number), protein (number in grams), carbs (number in grams), fats (number in grams), serving_size (string like '1 cup', '100g', '1 medium'), confidence (string: high/medium/low)."
             # Create image content
             image_content = ImageContent(image_base64=image_base64)
             message = UserMessage(
@@ -156,14 +156,14 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
                 file_contents=[image_content]
             )
         elif image_base64:
-            prompt = "Identify this food item and provide nutritional information. Return ONLY a JSON object with: food_name (string), calories (number), protein (number in grams), carbs (number in grams), fats (number in grams), confidence (string: high/medium/low)."
+            prompt = "Identify this food item and provide nutritional information. Estimate the serving size shown in the image. Return ONLY a JSON object with: food_name (string), calories (number), protein (number in grams), carbs (number in grams), fats (number in grams), serving_size (string like '1 cup', '100g', '1 medium'), confidence (string: high/medium/low)."
             image_content = ImageContent(image_base64=image_base64)
             message = UserMessage(
                 text=prompt,
                 file_contents=[image_content]
             )
         else:
-            prompt = f"Provide nutritional information for: {text_query}. Return ONLY a JSON object with: food_name (string), calories (number), protein (number in grams), carbs (number in grams), fats (number in grams), confidence (string: high/medium/low)."
+            prompt = f"Provide nutritional information for: {text_query}. Return ONLY a JSON object with: food_name (string), calories (number), protein (number in grams), carbs (number in grams), fats (number in grams), serving_size (string like '1 cup', '100g', '1 serving'), confidence (string: high/medium/low)."
             message = UserMessage(text=prompt)
         
         # Get response
@@ -185,8 +185,13 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
                 "protein": 10,
                 "carbs": 20,
                 "fats": 8,
+                "serving_size": "1 serving",
                 "confidence": "low"
             }
+        
+        # Ensure serving_size is present
+        if "serving_size" not in nutrition_data:
+            nutrition_data["serving_size"] = "1 serving"
         
         return nutrition_data
     except Exception as e:
@@ -198,6 +203,7 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
             "protein": 10,
             "carbs": 20,
             "fats": 8,
+            "serving_size": "1 serving",
             "confidence": "low",
             "error": str(e)
         }
