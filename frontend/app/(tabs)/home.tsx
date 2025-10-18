@@ -652,5 +652,24 @@ const styles = StyleSheet.create({
     color: '#999',
     textAlign: 'center',
     fontStyle: 'italic',
+    marginTop: 12,
+  },
+  addToLogButton: {
+    width: '100%',
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginBottom: 16,
+  },
+  addToLogGradient: {
+    flexDirection: 'row',
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  addToLogText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
