@@ -112,7 +112,7 @@ export default function ScanScreen() {
       setLastResult(response.data);
       Alert.alert(
         'Food Detected!',
-        `${response.data.food_name}\nCalories: ${response.data.calories}\nProtein: ${response.data.protein}g\nCarbs: ${response.data.carbs}g\nFats: ${response.data.fats}g`,
+        `${response.data.food_name}\n${response.data.serving_size || ''}\nCalories: ${response.data.calories}\nProtein: ${response.data.protein}g\nCarbs: ${response.data.carbs}g\nFats: ${response.data.fats}g\n\nFood has been added to your daily log!`,
         [
           {
             text: 'OK',
