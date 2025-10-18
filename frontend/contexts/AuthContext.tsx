@@ -1,9 +1,9 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import Constants from 'expo-constants';
 
-const API_URL = Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+// Use relative URL for web, which will go through the proxy
+const API_URL = '';
 
 interface User {
   username: string;
