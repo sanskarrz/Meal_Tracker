@@ -15,13 +15,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
-import Constants from 'expo-constants';
 
-const API_URL = Constants.expoConfig?.extra?.backendUrl || process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+const API_URL = '';
 
 export default function AddScreen() {
   const [mode, setMode] = useState<'manual' | 'recipe'>('manual');
   const [foodName, setFoodName] = useState('');
+  const [servingSize, setServingSize] = useState('1 serving');
   const [recipeText, setRecipeText] = useState('');
   const [loading, setLoading] = useState(false);
   const { token } = useAuth();
@@ -36,18 +36,19 @@ export default function AddScreen() {
     try {
       const response = await axios.post(
         `${API_URL}/api/food/manual`,
-        { food_name: foodName },
+        { food_name: foodName, serving_size: servingSize },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       Alert.alert(
         'Food Added!',
-        `${response.data.food_name}\nCalories: ${response.data.calories}\nProtein: ${response.data.protein}g\nCarbs: ${response.data.carbs}g\nFats: ${response.data.fats}g`,
+        `${response.data.food_name}\n${response.data.serving_size || ''}\nCalories: ${response.data.calories}\nProtein: ${response.data.protein}g\nCarbs: ${response.data.carbs}g\nFats: ${response.data.fats}g`,
         [
           {
             text: 'OK',
             onPress: () => {
               setFoodName('');
+              setServingSize('1 serving');
             },
           },
         ]
