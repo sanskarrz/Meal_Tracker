@@ -326,7 +326,29 @@ export default function HomeScreen() {
                   </View>
                 </View>
                 
-                <Text style={styles.resultNote}>This is for reference only. Go to Add tab to log this food.</Text>
+                <TouchableOpacity
+                  style={styles.addToLogButton}
+                  onPress={addSearchResultToLog}
+                  disabled={searching}
+                >
+                  <LinearGradient
+                    colors={['#36B37E', '#2A9D68']}
+                    style={styles.addToLogGradient}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                  >
+                    {searching ? (
+                      <ActivityIndicator color="white" />
+                    ) : (
+                      <>
+                        <Ionicons name="add-circle" size={20} color="white" />
+                        <Text style={styles.addToLogText}>Add to Daily Log</Text>
+                      </>
+                    )}
+                  </LinearGradient>
+                </TouchableOpacity>
+                
+                <Text style={styles.resultNote}>Tap to add this food to today's calories</Text>
               </View>
             )}
           </View>
