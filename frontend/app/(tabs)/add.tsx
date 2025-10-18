@@ -144,6 +144,17 @@ export default function AddScreen() {
                 />
               </View>
 
+              <View style={styles.inputContainer}>
+                <Ionicons name="scale-outline" size={20} color="#36B37E" />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Serving size (e.g., '1 cup', '100g', '1 medium')"
+                  value={servingSize}
+                  onChangeText={setServingSize}
+                  placeholderTextColor="#999"
+                />
+              </View>
+
               <TouchableOpacity
                 style={[styles.submitButton, loading && styles.submitButtonDisabled]}
                 onPress={addManualFood}
