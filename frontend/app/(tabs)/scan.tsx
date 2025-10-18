@@ -209,6 +209,9 @@ export default function ScanScreen() {
       {lastResult && (
         <View style={styles.resultCard}>
           <Text style={styles.resultTitle}>{lastResult.food_name}</Text>
+          {lastResult.serving_size && (
+            <Text style={styles.resultServing}>{lastResult.serving_size}</Text>
+          )}
           <View style={styles.resultRow}>
             <View style={styles.resultItem}>
               <Text style={styles.resultValue}>{lastResult.calories}</Text>
@@ -227,6 +230,7 @@ export default function ScanScreen() {
               <Text style={styles.resultLabel}>Fats</Text>
             </View>
           </View>
+          <Text style={styles.resultAddedNote}>✓ Added to your daily log</Text>
         </View>
       )}
     </View>
