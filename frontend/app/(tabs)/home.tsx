@@ -108,6 +108,32 @@ export default function HomeScreen() {
     }
   };
 
+  const addSearchResultToLog = async () => {
+    if (!searchResult) return;
+    
+    setSearching(true);
+    try {
+      await axios.post(
+        `${API_URL}/api/food/manual`,
+        { 
+          food_name: searchResult.food_name,
+          serving_size: searchResult.serving_size || '1 serving'
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      Alert.alert('Success!', 'Food added to your daily log');
+      setShowSearchModal(false);
+      setSearchQuery('');
+      setSearchResult(null);
+      loadData(); // Refresh the list
+    } catch (error) {
+      Alert.alert('Error', 'Failed to add food to log');
+    } finally {
+      setSearching(false);
+    }
+  };
+
   const onRefresh = () => {
     setRefreshing(true);
     loadData();
