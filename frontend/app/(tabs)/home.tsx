@@ -575,6 +575,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 12,
   },
+  dropdownFoodImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    marginRight: 12,
+  },
   dropdownInfo: {
     flex: 1,
     justifyContent: 'center',
