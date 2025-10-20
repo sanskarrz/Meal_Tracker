@@ -185,25 +185,6 @@ export default function ScanScreen() {
       setIsAnalyzing(false);
     }
   };
-        'Food Detected!',
-        `${response.data.food_name}\n${response.data.serving_size || ''}\nCalories: ${response.data.calories}\nProtein: ${response.data.protein}g\nCarbs: ${response.data.carbs}g\nFats: ${response.data.fats}g\n\nFood has been added to your daily log!`,
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              setCapturedImage(null);
-              setLastResult(null);
-            },
-          },
-        ]
-      );
-    } catch (error: any) {
-      console.error('Error analyzing image:', error);
-      Alert.alert('Error', error.response?.data?.detail || 'Failed to analyze image');
-    } finally {
-      setIsAnalyzing(false);
-    }
-  };
 
   const toggleCameraFacing = () => {
     setFacing((current) => (current === 'back' ? 'front' : 'back'));
