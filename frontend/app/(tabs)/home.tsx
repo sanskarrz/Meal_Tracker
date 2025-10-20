@@ -250,38 +250,41 @@ export default function HomeScreen() {
     loadData();
   };
 
-  const deleteEntry = async (entryId: string) => {
-    console.log('Delete button clicked for entry:', entryId);
-    Alert.alert('Delete Entry', 'Are you sure you want to delete this meal?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: async () => {
-          console.log('Delete confirmed, calling API for:', entryId);
-          try {
-            const url = `${API_URL}/api/food/${entryId}`;
-            console.log('Deleting from URL:', url);
-            await axios.delete(url, {
-              headers: { Authorization: `Bearer ${token}` },
-              timeout: 10000,
-            });
-            console.log('Delete successful');
-            Alert.alert('Success', 'Meal deleted successfully');
-            loadData();
-          } catch (error: any) {
-            console.error('Delete error:', error);
-            console.error('Error response:', error.response);
-            const errorMsg = error.response?.status === 401 
-              ? 'Session expired. Please log in again.'
-              : error.response?.status === 404
-              ? 'Meal not found. It may have been already deleted.'
-              : error.response?.data?.detail || 'Failed to delete meal. Please try again.';
-            Alert.alert('Error', errorMsg);
-          }
-        },
-      },
-    ]);
+  const deleteEntry = (entry: FoodEntry) => {
+    console.log('Delete button clicked for entry:', entry.id);
+    setDeletingEntry(entry);
+    setDeleteModalVisible(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingEntry) return;
+    
+    console.log('Delete confirmed, calling API for:', deletingEntry.id);
+    setLoading(true);
+    try {
+      const url = `${API_URL}/api/food/${deletingEntry.id}`;
+      console.log('Deleting from URL:', url);
+      await axios.delete(url, {
+        headers: { Authorization: `Bearer ${token}` },
+        timeout: 10000,
+      });
+      console.log('Delete successful');
+      setDeleteModalVisible(false);
+      setDeletingEntry(null);
+      Alert.alert('Success', 'Meal deleted successfully');
+      loadData();
+    } catch (error: any) {
+      console.error('Delete error:', error);
+      console.error('Error response:', error.response);
+      const errorMsg = error.response?.status === 401 
+        ? 'Session expired. Please log in again.'
+        : error.response?.status === 404
+        ? 'Meal not found. It may have been already deleted.'
+        : error.response?.data?.detail || 'Failed to delete meal. Please try again.';
+      Alert.alert('Error', errorMsg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const progressPercentage = stats ? Math.min((stats.total_calories / stats.daily_goal) * 100, 100) : 0;
