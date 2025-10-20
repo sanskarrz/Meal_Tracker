@@ -30,6 +30,7 @@ interface FoodEntry {
   entry_type: string;
   timestamp: string;
   date: string;
+  serving_size?: string;
 }
 
 export default function HistoryScreen() {
