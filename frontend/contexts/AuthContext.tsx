@@ -78,7 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(response.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
-      await AsyncStorage.removeItem('token');
+      await Storage.removeItem('token');
       setToken(null);
       setUser(null);
     }
@@ -91,7 +91,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         password,
       });
       const { access_token } = response.data;
-      await AsyncStorage.setItem('token', access_token);
+      await Storage.setItem('token', access_token);
       setToken(access_token);
       await fetchUserData(access_token);
     } catch (error: any) {
@@ -108,7 +108,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         daily_calorie_goal: 2000,
       });
       const { access_token } = response.data;
-      await AsyncStorage.setItem('token', access_token);
+      await Storage.setItem('token', access_token);
       setToken(access_token);
       await fetchUserData(access_token);
     } catch (error: any) {
@@ -117,7 +117,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
-    await AsyncStorage.removeItem('token');
+    await Storage.removeItem('token');
     setToken(null);
     setUser(null);
   };
