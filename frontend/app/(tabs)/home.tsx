@@ -395,6 +395,98 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
+  searchButton: {
+    padding: 4,
+  },
+  cameraButton: {
+    padding: 4,
+    marginLeft: 4,
+  },
+  dropdown: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    marginTop: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    maxHeight: 300,
+  },
+  dropdownItem: {
+    flexDirection: 'row',
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  dropdownLeft: {
+    flexDirection: 'row',
+    flex: 1,
+  },
+  foodIconPlaceholder: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    backgroundColor: '#F0F0F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  dropdownInfo: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  dropdownFoodName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 2,
+  },
+  dropdownServing: {
+    fontSize: 12,
+    color: '#36B37E',
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  dropdownMacros: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  dropdownMacroText: {
+    fontSize: 11,
+    color: '#666',
+  },
+  dropdownRight: {
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+  },
+  dropdownCalories: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#36B37E',
+  },
+  dropdownCaloriesLabel: {
+    fontSize: 11,
+    color: '#999',
+  },
+  addIcon: {
+    marginTop: 4,
+  },
+  dropdownEmpty: {
+    alignItems: 'center',
+    padding: 32,
+  },
+  dropdownEmptyText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#999',
+    marginTop: 12,
+  },
+  dropdownEmptySubtext: {
+    fontSize: 14,
+    color: '#ccc',
+    marginTop: 4,
+  },
   content: {
     flex: 1,
     padding: 16,
