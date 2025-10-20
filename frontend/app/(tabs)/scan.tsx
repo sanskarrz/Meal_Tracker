@@ -495,56 +495,102 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  resultCard: {
-    position: 'absolute',
-    bottom: 120,
-    left: 16,
-    right: 16,
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
     backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 8,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 24,
+    maxHeight: '70%',
   },
-  resultTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 4,
-    textAlign: 'center',
-  },
-  resultServing: {
-    fontSize: 14,
-    color: '#36B37E',
-    fontWeight: '500',
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  resultRow: {
+  modalHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
   },
-  resultItem: {
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  resultContainer: {
     alignItems: 'center',
   },
-  resultValue: {
-    fontSize: 20,
+  resultFoodName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  resultCalories: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  resultCaloriesValue: {
+    fontSize: 48,
     fontWeight: 'bold',
     color: '#36B37E',
   },
-  resultLabel: {
+  resultCaloriesLabel: {
+    fontSize: 16,
+    color: '#999',
+  },
+  resultMacros: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginBottom: 24,
+  },
+  resultMacroItem: {
+    alignItems: 'center',
+  },
+  resultMacroValue: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#333',
+  },
+  resultMacroLabel: {
     fontSize: 12,
     color: '#999',
     marginTop: 4,
   },
-  resultAddedNote: {
-    fontSize: 14,
-    color: '#36B37E',
-    textAlign: 'center',
-    marginTop: 12,
-    fontWeight: '500',
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    height: 56,
+    gap: 12,
+    width: '100%',
+    marginBottom: 16,
+  },
+  servingInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333',
+  },
+  addToLogButton: {
+    width: '100%',
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  addToLogGradient: {
+    flexDirection: 'row',
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  addToLogText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
