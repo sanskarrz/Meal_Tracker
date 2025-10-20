@@ -94,6 +94,156 @@ export default function ProfileScreen() {
           <Text style={styles.footerSubtext}>Version 1.0.0</Text>
         </View>
       </ScrollView>
+      
+      {/* Logout Confirmation Modal */}
+      <Modal
+        visible={logoutModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setLogoutModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalIcon}>
+              <Ionicons name="log-out" size={48} color="#FF5252" />
+            </View>
+            <Text style={styles.modalTitle}>Logout?</Text>
+            <Text style={styles.modalText}>
+              Are you sure you want to logout? You'll need to sign in again to access your account.
+            </Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => setLogoutModalVisible(false)}
+              >
+                <Text style={styles.cancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={confirmLogout}
+              >
+                <Text style={styles.confirmText}>Logout</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      
+      {/* FAQ Modal */}
+      <Modal
+        visible={faqModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setFaqModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.infoModalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.infoModalTitle}>Frequently Asked Questions</Text>
+              <TouchableOpacity onPress={() => setFaqModalVisible(false)}>
+                <Ionicons name="close-circle" size={28} color="#999" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.infoScroll}>
+              <View style={styles.faqItem}>
+                <Text style={styles.faqQuestion}>Q: How accurate is the calorie tracking?</Text>
+                <Text style={styles.faqAnswer}>
+                  Our AI uses Google Gemini Vision to analyze food images with 95%+ accuracy. For manual entries, we use comprehensive nutritional databases.
+                </Text>
+              </View>
+              <View style={styles.faqItem}>
+                <Text style={styles.faqQuestion}>Q: Can I edit serving sizes?</Text>
+                <Text style={styles.faqAnswer}>
+                  Yes! Click the edit icon (pencil) next to any meal to adjust the serving size.
+                </Text>
+              </View>
+              <View style={styles.faqItem}>
+                <Text style={styles.faqQuestion}>Q: How do I scan food?</Text>
+                <Text style={styles.faqAnswer}>
+                  Go to the Scan tab, point your camera at food, or choose from your gallery. The AI will analyze and calculate calories automatically.
+                </Text>
+              </View>
+              <View style={styles.faqItem}>
+                <Text style={styles.faqQuestion}>Q: Can I track recipes?</Text>
+                <Text style={styles.faqAnswer}>
+                  Absolutely! Go to Add tab, switch to Recipe mode, and paste your recipe. The app will calculate total nutrition.
+                </Text>
+              </View>
+              <View style={styles.faqItem}>
+                <Text style={styles.faqQuestion}>Q: Is my data saved?</Text>
+                <Text style={styles.faqAnswer}>
+                  Yes! All your meals are saved securely and synced to your account. You can view history anytime.
+                </Text>
+              </View>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+      
+      {/* How To Use Modal */}
+      <Modal
+        visible={howToModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setHowToModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.infoModalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.infoModalTitle}>How to Use</Text>
+              <TouchableOpacity onPress={() => setHowToModalVisible(false)}>
+                <Ionicons name="close-circle" size={28} color="#999" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.infoScroll}>
+              <View style={styles.howToStep}>
+                <View style={styles.stepNumber}>
+                  <Text style={styles.stepNumberText}>1</Text>
+                </View>
+                <View style={styles.stepContent}>
+                  <Text style={styles.stepTitle}>Scan Your Food</Text>
+                  <Text style={styles.stepText}>
+                    Use the Scan tab to take a photo of your meal or select from gallery. AI will recognize and calculate calories.
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.howToStep}>
+                <View style={styles.stepNumber}>
+                  <Text style={styles.stepNumberText}>2</Text>
+                </View>
+                <View style={styles.stepContent}>
+                  <Text style={styles.stepTitle}>Manual Entry</Text>
+                  <Text style={styles.stepText}>
+                    Go to Add tab to manually enter food names or entire recipes. Adjust serving sizes as needed.
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.howToStep}>
+                <View style={styles.stepNumber}>
+                  <Text style={styles.stepNumberText}>3</Text>
+                </View>
+                <View style={styles.stepContent}>
+                  <Text style={styles.stepTitle}>Quick Search</Text>
+                  <Text style={styles.stepText}>
+                    Use the search bar on Home screen for quick calorie checks. Click camera icon for instant scanning.
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.howToStep}>
+                <View style={styles.stepNumber}>
+                  <Text style={styles.stepNumberText}>4</Text>
+                </View>
+                <View style={styles.stepContent}>
+                  <Text style={styles.stepTitle}>Track & Edit</Text>
+                  <Text style={styles.stepText}>
+                    View daily progress on Home. Edit (pencil icon) or delete (trash icon) any entry. Check history for past days.
+                  </Text>
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
