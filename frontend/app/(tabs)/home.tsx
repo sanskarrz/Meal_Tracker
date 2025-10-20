@@ -279,6 +279,33 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      {loading ? (
+        // Loading Skeleton
+        <View style={styles.container}>
+          <LinearGradient colors={['#36B37E', '#403294']} style={styles.header}>
+            <View style={styles.headerContent}>
+              <SkeletonPlaceholder>
+                <View style={{ width: 150, height: 24, marginBottom: 8 }} />
+                <View style={{ width: 200, height: 18 }} />
+              </SkeletonPlaceholder>
+            </View>
+          </LinearGradient>
+          
+          <ScrollView style={styles.content}>
+            <SkeletonPlaceholder>
+              <View style={styles.skeletonCard}>
+                <View style={{ width: '100%', height: 120, borderRadius: 16 }} />
+              </View>
+              <View style={styles.skeletonCard}>
+                <View style={{ width: 100, height: 20, marginBottom: 12 }} />
+                <View style={{ width: '100%', height: 80, borderRadius: 12, marginBottom: 12 }} />
+                <View style={{ width: '100%', height: 80, borderRadius: 12 }} />
+              </View>
+            </SkeletonPlaceholder>
+          </ScrollView>
+        </View>
+      ) : (
+        <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <LinearGradient colors={['#36B37E', '#403294']} style={styles.header}>
         <View style={styles.headerContent}>
           <View>
