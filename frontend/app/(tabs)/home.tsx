@@ -133,7 +133,7 @@ export default function HomeScreen() {
       const response = await axios.post(
         `${API_URL}/api/food/search`,
         { query: searchQuery },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` }, timeout: 10000 }
       );
       
       // Fetch food image from Unsplash
@@ -141,8 +141,15 @@ export default function HomeScreen() {
       
       // Convert single result to array for dropdown with image
       setSearchResults([{ ...response.data, image_url: imageUrl }]);
-    } catch (error) {
-      Alert.alert('Error', 'Failed to search food');
+    } catch (error: any) {
+      console.error('Search error:', error);
+      if (error.code === 'ECONNABORTED') {
+        Alert.alert('Timeout', 'Search took too long. Please try again.');
+      } else if (error.response?.status === 401) {
+        Alert.alert('Session Expired', 'Please log in again.');
+      } else {
+        Alert.alert('Error', error.response?.data?.detail || 'Failed to search food. Please try again.');
+      }
       setSearchResults([]);
     } finally {
       setSearching(false);
