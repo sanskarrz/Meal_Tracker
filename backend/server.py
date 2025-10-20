@@ -395,7 +395,8 @@ async def get_today_entries(current_user = Depends(get_current_user)):
             "image_base64": entry.get("image_base64"),
             "entry_type": entry["entry_type"],
             "timestamp": entry["timestamp"].isoformat(),
-            "date": entry["date"]
+            "date": entry["date"],
+            "serving_size": entry.get("serving_size", "1 serving")
         }
         for entry in entries
     ]
