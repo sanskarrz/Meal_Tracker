@@ -81,6 +81,54 @@ export default function HistoryScreen() {
     setSelectedDate(newDate);
   };
 
+  const openEditModal = (entry: FoodEntry) => {
+    setEditingEntry(entry);
+    setEditServingSize(entry.serving_size || '1 serving');
+    setEditModalVisible(true);
+  };
+
+  const saveEdit = async () => {
+    if (!editingEntry) return;
+    
+    setLoading(true);
+    try {
+      await axios.put(
+        `${API_URL}/api/food/${editingEntry.id}`,
+        { serving_size: editServingSize },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      Alert.alert('Success!', 'Meal updated successfully');
+      setEditModalVisible(false);
+      setEditingEntry(null);
+      loadData();
+    } catch (error) {
+      Alert.alert('Error', 'Failed to update meal');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteEntry = async (entryId: string) => {
+    Alert.alert('Delete Entry', 'Are you sure you want to delete this entry?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await axios.delete(`${API_URL}/api/food/${entryId}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            loadData();
+          } catch (error) {
+            Alert.alert('Error', 'Failed to delete entry');
+          }
+        },
+      },
+    ]);
+  };
+
   const isToday = selectedDate.toDateString() === new Date().toDateString();
 
   return (
