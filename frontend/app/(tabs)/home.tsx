@@ -280,28 +280,22 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       {loading ? (
-        // Loading Skeleton
+        // Loading State
         <View style={styles.container}>
           <LinearGradient colors={['#36B37E', '#403294']} style={styles.header}>
             <View style={styles.headerContent}>
-              <SkeletonPlaceholder>
-                <View style={{ width: 150, height: 24, marginBottom: 8 }} />
-                <View style={{ width: 200, height: 18 }} />
-              </SkeletonPlaceholder>
+              <View style={styles.loadingPlaceholder}>
+                <ActivityIndicator size="large" color="white" />
+                <Text style={styles.loadingText}>Loading...</Text>
+              </View>
             </View>
           </LinearGradient>
           
           <ScrollView style={styles.content}>
-            <SkeletonPlaceholder>
-              <View style={styles.skeletonCard}>
-                <View style={{ width: '100%', height: 120, borderRadius: 16 }} />
-              </View>
-              <View style={styles.skeletonCard}>
-                <View style={{ width: 100, height: 20, marginBottom: 12 }} />
-                <View style={{ width: '100%', height: 80, borderRadius: 12, marginBottom: 12 }} />
-                <View style={{ width: '100%', height: 80, borderRadius: 12 }} />
-              </View>
-            </SkeletonPlaceholder>
+            <View style={styles.loadingCard}>
+              <ActivityIndicator size="large" color="#36B37E" />
+              <Text style={styles.loadingCardText}>Loading your data...</Text>
+            </View>
           </ScrollView>
         </View>
       ) : (
