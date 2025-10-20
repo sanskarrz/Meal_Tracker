@@ -18,9 +18,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
-// Removed skeleton placeholder due to compatibility issues
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
-const API_URL = '';
+const API_URL = process.env.EXPO_PUBLIC_BACKEND_URL || '';
 
 interface FoodEntry {
   id: string;
