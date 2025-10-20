@@ -51,6 +51,7 @@ interface QuickSearchResult {
   carbs: number;
   fats: number;
   serving_size?: string;
+  image_url?: string;
 }
 
 export default function HomeScreen() {
