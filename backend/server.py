@@ -270,7 +270,8 @@ async def search_food(request: QuickSearchRequest, current_user = Depends(get_cu
             "calories": nutrition_data["calories"],
             "protein": nutrition_data.get("protein", 0),
             "carbs": nutrition_data.get("carbs", 0),
-            "fats": nutrition_data.get("fats", 0)
+            "fats": nutrition_data.get("fats", 0),
+            "serving_size": nutrition_data.get("serving_size", "1 serving")
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error searching food: {str(e)}")
