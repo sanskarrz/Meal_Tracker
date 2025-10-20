@@ -111,13 +111,31 @@ export default function HomeScreen() {
         { query: searchQuery },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      // Convert single result to array for dropdown
-      setSearchResults([response.data]);
+      
+      // Fetch food image from Unsplash
+      const imageUrl = await getFoodImage(searchQuery);
+      
+      // Convert single result to array for dropdown with image
+      setSearchResults([{ ...response.data, image_url: imageUrl }]);
     } catch (error) {
       Alert.alert('Error', 'Failed to search food');
       setSearchResults([]);
     } finally {
       setSearching(false);
+    }
+  };
+
+  const getFoodImage = async (foodName: string): Promise<string> => {
+    try {
+      // Using Unsplash's public image URLs (no API key needed for basic use)
+      const query = encodeURIComponent(foodName + ' food');
+      const response = await fetch(
+        `https://source.unsplash.com/400x300/?${query}`
+      );
+      return response.url;
+    } catch (error) {
+      // Fallback to a placeholder if image fetch fails
+      return `https://source.unsplash.com/400x300/?food`;
     }
   };
 
