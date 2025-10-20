@@ -167,6 +167,35 @@ export default function HomeScreen() {
     router.push('/(tabs)/scan');
   };
 
+  const openEditModal = (entry: FoodEntry) => {
+    setEditingEntry(entry);
+    setEditServingSize(entry.serving_size || '1 serving');
+    setEditModalVisible(true);
+  };
+
+  const saveEdit = async () => {
+    if (!editingEntry) return;
+    
+    setLoading(true);
+    try {
+      // Update the entry with new serving size
+      await axios.put(
+        `${API_URL}/api/food/${editingEntry.id}`,
+        { serving_size: editServingSize },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      Alert.alert('Success!', 'Meal updated successfully');
+      setEditModalVisible(false);
+      setEditingEntry(null);
+      loadData(); // Refresh the list
+    } catch (error) {
+      Alert.alert('Error', 'Failed to update meal');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const onRefresh = () => {
     setRefreshing(true);
     loadData();
