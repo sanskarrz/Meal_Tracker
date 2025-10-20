@@ -466,4 +466,104 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999',
   },
+  servingSize: {
+    fontSize: 12,
+    color: '#36B37E',
+    fontWeight: '500',
+    marginBottom: 2,
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 8,
+  },
+  editButton: {
+    padding: 4,
+  },
+  deleteButton: {
+    padding: 4,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 24,
+    maxHeight: '70%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  editContainer: {
+    gap: 16,
+  },
+  editFoodName: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  editInfoCard: {
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    padding: 16,
+    gap: 12,
+  },
+  editInfoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  editLabel: {
+    fontSize: 16,
+    color: '#666',
+  },
+  editValue: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    height: 56,
+    gap: 12,
+  },
+  editInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333',
+  },
+  saveButton: {
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginTop: 8,
+  },
+  saveButtonGradient: {
+    flexDirection: 'row',
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  saveButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });
