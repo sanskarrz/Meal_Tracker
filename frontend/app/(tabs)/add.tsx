@@ -33,7 +33,12 @@ export default function AddScreen() {
 
   const addManualFood = async () => {
     if (!foodName.trim()) {
-      Alert.alert('Error', 'Please enter a food name');
+      Alert.alert('Validation Error', 'Please enter a food name');
+      return;
+    }
+    
+    if (!servingSize.trim()) {
+      Alert.alert('Validation Error', 'Please enter a serving size');
       return;
     }
 
@@ -42,17 +47,47 @@ export default function AddScreen() {
       const response = await axios.post(
         `${API_URL}/api/food/manual`,
         { food_name: foodName, serving_size: servingSize },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { 
+          headers: { Authorization: `Bearer ${token}` },
+          timeout: 12000
+        }
       );
 
-      Alert.alert(
-        'Food Added!',
-        `${response.data.food_name}\n${response.data.serving_size || ''}\nCalories: ${response.data.calories}\nProtein: ${response.data.protein}g\nCarbs: ${response.data.carbs}g\nFats: ${response.data.fats}g`,
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              setFoodName('');
+      setResult(response.data);
+      setShowResultModal(true);
+      
+      // Trigger fade-in animation
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+
+    } catch (error: any) {
+      console.error('Error adding food:', error);
+      let errorMessage = 'Failed to analyze food. Please try again.';
+      
+      if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Analysis took too long. Please try again.';
+      } else if (error.response?.status === 401) {
+        errorMessage = 'Session expired. Please log in again.';
+      } else if (error.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      }
+      
+      Alert.alert('Error', errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addToLog = async () => {
+    Alert.alert('Success!', `${result.food_name} added to your daily log`);
+    setShowResultModal(false);
+    setFoodName('');
+    setServingSize('1 serving');
+    setResult(null);
+  };
               setServingSize('1 serving');
             },
           },
