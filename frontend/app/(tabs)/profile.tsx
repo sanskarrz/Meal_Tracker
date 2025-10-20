@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Alert,
+  Modal,
+  Linking,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,19 +16,28 @@ import { useRouter } from 'expo-router';
 export default function ProfileScreen() {
   const { user, logout } = useAuth();
   const router = useRouter();
+  
+  // Modal states
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
+  const [faqModalVisible, setFaqModalVisible] = useState(false);
+  const [howToModalVisible, setHowToModalVisible] = useState(false);
 
   const handleLogout = () => {
-    Alert.alert('Logout', 'Are you sure you want to logout?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Logout',
-        style: 'destructive',
-        onPress: async () => {
-          await logout();
-          router.replace('/(auth)/login');
-        },
-      },
-    ]);
+    setLogoutModalVisible(true);
+  };
+  
+  const confirmLogout = async () => {
+    await logout();
+    setLogoutModalVisible(false);
+    router.replace('/(auth)/login');
+  };
+  
+  const showFAQ = () => {
+    setFaqModalVisible(true);
+  };
+  
+  const showHowTo = () => {
+    setHowToModalVisible(true);
   };
 
   return (
