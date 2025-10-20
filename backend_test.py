@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 import sys
 
 # Configuration
-BASE_URL = "https://nutri-track-18.preview.emergentagent.com/api"
+BASE_URL = "https://meal-scanner-34.preview.emergentagent.com/api"
 TEST_USER = {
     "username": "healthtest_user",
     "email": "healthtest@example.com", 
