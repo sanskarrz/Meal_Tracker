@@ -201,6 +201,21 @@ backend:
           agent: "testing"
           comment: "Gemini AI integration working excellently. Tested with multiple foods (banana: 105 cal, apple: 95 cal, rice: 130 cal) - all within expected ranges. Provides complete nutritional data including protein, carbs, and fats. High accuracy and reliability."
 
+  - task: "Food Search Endpoint for Quick Search Feature"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "Initial testing found missing serving_size field in POST /api/food/search response. Fixed by adding serving_size field to response payload."
+        - working: true
+          agent: "testing"
+          comment: "Food search endpoint (POST /api/food/search) working perfectly for quick search feature. Successfully tested with apple (95 cal), chicken breast (165 cal, 31g protein), empty query handling, authentication enforcement, and Gemini AI integration. All required fields present: food_name, calories, protein, carbs, fats, serving_size. Ready for frontend dropdown integration."
+
 frontend:
   - task: "Quick Search with Camera Button and Dropdown"
     implemented: true
