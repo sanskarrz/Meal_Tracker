@@ -276,11 +276,10 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Cross-Platform Authentication Storage"
     - "Quick Search with Camera Button and Dropdown"
     - "Food Search API Integration"
-  stuck_tasks:
-    - "Quick Search with Camera Button and Dropdown"
-    - "Food Search API Integration"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
