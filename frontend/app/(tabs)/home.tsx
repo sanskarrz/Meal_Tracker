@@ -179,16 +179,20 @@ export default function HomeScreen() {
           food_name: result.food_name,
           serving_size: result.serving_size || '1 serving'
         },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` }, timeout: 10000 }
       );
       
-      Alert.alert('Success!', 'Food added to your daily log');
+      Alert.alert('Success!', `${result.food_name} added to your daily log`);
       setShowDropdown(false);
       setSearchQuery('');
       setSearchResults([]);
-      loadData(); // Refresh the list
-    } catch (error) {
-      Alert.alert('Error', 'Failed to add food to log');
+      loadData();
+    } catch (error: any) {
+      console.error('Add to log error:', error);
+      const errorMsg = error.response?.status === 401 
+        ? 'Session expired. Please log in again.'
+        : error.response?.data?.detail || 'Failed to add food. Please try again.';
+      Alert.alert('Error', errorMsg);
     } finally {
       setSearching(false);
     }
