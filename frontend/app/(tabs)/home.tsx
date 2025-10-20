@@ -18,7 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+// Removed skeleton placeholder due to compatibility issues
 
 const API_URL = '';
 
