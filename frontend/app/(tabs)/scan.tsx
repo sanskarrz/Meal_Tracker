@@ -27,9 +27,12 @@ export default function ScanScreen() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [lastResult, setLastResult] = useState<any>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [servingSize, setServingSize] = useState('');
+  const [showAddModal, setShowAddModal] = useState(false);
   const { token } = useAuth();
   const cameraRef = useRef<any>(null);
   const analysisTimerRef = useRef<any>(null);
+  const fadeAnim = useState(new Animated.Value(0))[0];
 
   useEffect(() => {
     return () => {
