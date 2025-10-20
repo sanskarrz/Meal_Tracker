@@ -260,34 +260,84 @@ export default function ScanScreen() {
           </TouchableOpacity>
         )}
       </View>
-
-      {lastResult && (
-        <View style={styles.resultCard}>
-          <Text style={styles.resultTitle}>{lastResult.food_name}</Text>
-          {lastResult.serving_size && (
-            <Text style={styles.resultServing}>{lastResult.serving_size}</Text>
-          )}
-          <View style={styles.resultRow}>
-            <View style={styles.resultItem}>
-              <Text style={styles.resultValue}>{lastResult.calories}</Text>
-              <Text style={styles.resultLabel}>Calories</Text>
+      
+      {/* Result Modal */}
+      <Modal
+        visible={showAddModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowAddModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <Animated.View style={[styles.modalContent, { opacity: fadeAnim }]}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Food Detected!</Text>
+              <TouchableOpacity onPress={() => setShowAddModal(false)}>
+                <Ionicons name="close-circle" size={28} color="#999" />
+              </TouchableOpacity>
             </View>
-            <View style={styles.resultItem}>
-              <Text style={styles.resultValue}>{lastResult.protein}g</Text>
-              <Text style={styles.resultLabel}>Protein</Text>
-            </View>
-            <View style={styles.resultItem}>
-              <Text style={styles.resultValue}>{lastResult.carbs}g</Text>
-              <Text style={styles.resultLabel}>Carbs</Text>
-            </View>
-            <View style={styles.resultItem}>
-              <Text style={styles.resultValue}>{lastResult.fats}g</Text>
-              <Text style={styles.resultLabel}>Fats</Text>
-            </View>
-          </View>
-          <Text style={styles.resultAddedNote}>✓ Added to your daily log</Text>
+            
+            {lastResult && (
+              <View style={styles.resultContainer}>
+                <Text style={styles.resultFoodName}>{lastResult.food_name}</Text>
+                
+                <View style={styles.resultCalories}>
+                  <Text style={styles.resultCaloriesValue}>{lastResult.calories}</Text>
+                  <Text style={styles.resultCaloriesLabel}>calories</Text>
+                </View>
+                
+                <View style={styles.resultMacros}>
+                  <View style={styles.resultMacroItem}>
+                    <Text style={styles.resultMacroValue}>{lastResult.protein}g</Text>
+                    <Text style={styles.resultMacroLabel}>Protein</Text>
+                  </View>
+                  <View style={styles.resultMacroItem}>
+                    <Text style={styles.resultMacroValue}>{lastResult.carbs}g</Text>
+                    <Text style={styles.resultMacroLabel}>Carbs</Text>
+                  </View>
+                  <View style={styles.resultMacroItem}>
+                    <Text style={styles.resultMacroValue}>{lastResult.fats}g</Text>
+                    <Text style={styles.resultMacroLabel}>Fats</Text>
+                  </View>
+                </View>
+                
+                <View style={styles.inputContainer}>
+                  <Ionicons name="scale-outline" size={20} color="#36B37E" />
+                  <TextInput
+                    style={styles.servingInput}
+                    placeholder="Serving size (e.g., '1 cup', '100g')"
+                    value={servingSize}
+                    onChangeText={setServingSize}
+                    placeholderTextColor="#999"
+                  />
+                </View>
+                
+                <TouchableOpacity
+                  style={styles.addToLogButton}
+                  onPress={addToLog}
+                  disabled={isAnalyzing}
+                >
+                  <LinearGradient
+                    colors={['#36B37E', '#2A9D68']}
+                    style={styles.addToLogGradient}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                  >
+                    {isAnalyzing ? (
+                      <ActivityIndicator color="white" />
+                    ) : (
+                      <>
+                        <Ionicons name="add-circle" size={20} color="white" />
+                        <Text style={styles.addToLogText}>Add to Daily Log</Text>
+                      </>
+                    )}
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            )}
+          </Animated.View>
         </View>
-      )}
+      </Modal>
     </View>
   );
 }
