@@ -578,6 +578,51 @@ export default function HomeScreen() {
           </View>
         </View>
       </Modal>
+      
+      {/* Delete Confirmation Modal */}
+      <Modal
+        visible={deleteModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setDeleteModalVisible(false)}
+      >
+        <View style={styles.deleteModalOverlay}>
+          <View style={styles.deleteModalContent}>
+            <View style={styles.deleteModalIcon}>
+              <Ionicons name="trash" size={48} color="#FF5252" />
+            </View>
+            
+            <Text style={styles.deleteModalTitle}>Delete Meal?</Text>
+            
+            {deletingEntry && (
+              <Text style={styles.deleteModalText}>
+                Are you sure you want to delete "{deletingEntry.food_name}"? This action cannot be undone.
+              </Text>
+            )}
+            
+            <View style={styles.deleteModalButtons}>
+              <TouchableOpacity
+                style={styles.deleteCancelButton}
+                onPress={() => setDeleteModalVisible(false)}
+              >
+                <Text style={styles.deleteCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={styles.deleteConfirmButton}
+                onPress={confirmDelete}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <Text style={styles.deleteConfirmText}>Delete</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
       </Animated.View>
       )}
     </View>
