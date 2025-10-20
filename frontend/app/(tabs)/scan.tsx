@@ -19,7 +19,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
-const API_URL = '';
+const API_URL = process.env.EXPO_PUBLIC_BACKEND_URL || '';
 
 export default function ScanScreen() {
   const [facing, setFacing] = useState<'back' | 'front'>('back');
