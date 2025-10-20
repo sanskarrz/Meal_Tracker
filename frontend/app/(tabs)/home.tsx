@@ -571,6 +571,8 @@ export default function HomeScreen() {
           </View>
         </View>
       </Modal>
+      </Animated.View>
+      )}
     </View>
   );
 }
