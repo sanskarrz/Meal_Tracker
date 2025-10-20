@@ -440,6 +440,37 @@ async def delete_food_entry(entry_id: str, current_user = Depends(get_current_us
     
     return {"message": "Food entry deleted successfully"}
 
+@app.put("/api/food/{entry_id}")
+async def update_food_entry(entry_id: str, request: dict, current_user = Depends(get_current_user)):
+    """Update a food entry (mainly serving size)"""
+    try:
+        # Get the existing entry
+        entry = food_entries_collection.find_one({
+            "_id": ObjectId(entry_id),
+            "user_id": str(current_user["_id"])
+        })
+        
+        if not entry:
+            raise HTTPException(status_code=404, detail="Food entry not found")
+        
+        # Update serving size if provided
+        new_serving_size = request.get("serving_size")
+        if new_serving_size:
+            # Recalculate nutrition based on new serving size if needed
+            # For now, just update the serving size field
+            result = food_entries_collection.update_one(
+                {"_id": ObjectId(entry_id)},
+                {"$set": {"serving_size": new_serving_size}}
+            )
+            
+            if result.modified_count == 0:
+                raise HTTPException(status_code=400, detail="Failed to update entry")
+        
+        return {"message": "Food entry updated successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error updating food entry: {str(e)}")
+
+
 @app.get("/api/stats/daily")
 async def get_daily_stats(date: Optional[str] = None, current_user = Depends(get_current_user)):
     """Get daily calorie statistics"""
