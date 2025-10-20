@@ -74,6 +74,10 @@ export default function HomeScreen() {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingEntry, setEditingEntry] = useState<FoodEntry | null>(null);
   const [editServingSize, setEditServingSize] = useState('');
+  
+  // Animation
+  const fadeAnim = useState(new Animated.Value(0))[0];
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
