@@ -204,6 +204,9 @@ export default function HistoryScreen() {
                 )}
                 <View style={styles.entryInfo}>
                   <Text style={styles.entryName}>{entry.food_name}</Text>
+                  {entry.serving_size && (
+                    <Text style={styles.servingSize}>{entry.serving_size}</Text>
+                  )}
                   <Text style={styles.entryTime}>
                     {new Date(entry.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                   </Text>
@@ -217,6 +220,14 @@ export default function HistoryScreen() {
               <View style={styles.entryRight}>
                 <Text style={styles.entryCalories}>{entry.calories}</Text>
                 <Text style={styles.entryCaloriesLabel}>cal</Text>
+                <View style={styles.actionButtons}>
+                  <TouchableOpacity onPress={() => openEditModal(entry)} style={styles.editButton}>
+                    <Ionicons name="pencil-outline" size={20} color="#36B37E" />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => deleteEntry(entry.id)} style={styles.deleteButton}>
+                    <Ionicons name="trash-outline" size={20} color="#FF5252" />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           ))
