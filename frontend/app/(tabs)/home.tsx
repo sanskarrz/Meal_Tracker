@@ -83,9 +83,22 @@ export default function HomeScreen() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    if (!loading) {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [loading]);
+
   const loadData = async () => {
+    if (!token) return;
+    
     try {
-      const [statsRes, entriesRes] = await Promise.all([
+      setError(null);
+      const [statsResponse, entriesResponse] = await Promise.all([
         axios.get(`${API_URL}/api/stats/daily`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
@@ -93,10 +106,15 @@ export default function HomeScreen() {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
-      setStats(statsRes.data);
-      setEntries(entriesRes.data);
-    } catch (error) {
+
+      setStats(statsResponse.data);
+      setEntries(entriesResponse.data);
+    } catch (error: any) {
       console.error('Error loading data:', error);
+      const errorMessage = error.response?.status === 401 
+        ? 'Session expired. Please log in again.'
+        : error.response?.data?.detail || 'Failed to load data. Please try again.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
       setRefreshing(false);
