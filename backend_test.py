@@ -479,6 +479,9 @@ def main():
         print("❌ Authentication failed. Cannot proceed with protected endpoint tests.")
         return
     
+    # Test food search endpoint (focus of this testing session)
+    test_food_search_endpoint(token)
+    
     # Test food analysis features
     entry_ids = test_food_analysis(token)
     
