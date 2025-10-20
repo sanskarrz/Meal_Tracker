@@ -239,7 +239,9 @@ async def register(user_data: UserRegister):
 @app.post("/api/auth/login", response_model=Token)
 async def login(user_data: UserLogin):
     user = users_collection.find_one({"username": user_data.username})
-    if not user or not verify_password(user_data.password, user["password_hash"]):
+    # Support both 'password' and 'password_hash' field names for backwards compatibility
+    password_field = user.get("password_hash") or user.get("password") if user else None
+    if not user or not password_field or not verify_password(user_data.password, password_field):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password"
