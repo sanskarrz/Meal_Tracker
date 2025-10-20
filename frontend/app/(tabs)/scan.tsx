@@ -113,11 +113,78 @@ export default function ScanScreen() {
       const response = await axios.post(
         `${API_URL}/api/food/analyze-image`,
         { image_base64: base64Image },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { 
+          headers: { Authorization: `Bearer ${token}` },
+          timeout: 15000 
+        }
       );
 
       setLastResult(response.data);
-      Alert.alert(
+      setServingSize(response.data.serving_size || '1 serving');
+      setShowAddModal(true);
+      
+      // Trigger fade-in animation
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+      
+    } catch (error: any) {
+      console.error('Error analyzing image:', error);
+      let errorMessage = 'Failed to analyze image. Please try again.';
+      
+      if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Analysis took too long. Please try again with a clearer photo.';
+      } else if (error.response?.status === 401) {
+        errorMessage = 'Session expired. Please log in again.';
+      } else if (error.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      }
+      
+      Alert.alert('Analysis Error', errorMessage);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const addToLog = async () => {
+    if (!lastResult) return;
+    
+    if (!servingSize.trim()) {
+      Alert.alert('Validation Error', 'Please enter a serving size');
+      return;
+    }
+    
+    setIsAnalyzing(true);
+    try {
+      await axios.post(
+        `${API_URL}/api/food/manual`,
+        { 
+          food_name: lastResult.food_name,
+          serving_size: servingSize
+        },
+        { 
+          headers: { Authorization: `Bearer ${token}` },
+          timeout: 10000
+        }
+      );
+      
+      Alert.alert('Success!', `${lastResult.food_name} added to your daily log`);
+      setShowAddModal(false);
+      setLastResult(null);
+      setCapturedImage(null);
+      setServingSize('');
+    } catch (error: any) {
+      console.error('Add to log error:', error);
+      const errorMsg = error.response?.status === 401 
+        ? 'Session expired. Please log in again.'
+        : error.response?.data?.detail || 'Failed to add food. Please try again.';
+      Alert.alert('Error', errorMsg);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
         'Food Detected!',
         `${response.data.food_name}\n${response.data.serving_size || ''}\nCalories: ${response.data.calories}\nProtein: ${response.data.protein}g\nCarbs: ${response.data.carbs}g\nFats: ${response.data.fats}g\n\nFood has been added to your daily log!`,
         [
