@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 import axios from 'axios';
 
 // Use relative URL for web, which will go through the proxy
-const API_URL = '';
+const API_URL = process.env.EXPO_PUBLIC_BACKEND_URL || '';
 
 // Cross-platform storage helper
 const Storage = {
