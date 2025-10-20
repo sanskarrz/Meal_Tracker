@@ -55,6 +55,7 @@ interface QuickSearchResult {
 
 export default function HomeScreen() {
   const { user, token } = useAuth();
+  const router = useRouter();
   const [stats, setStats] = useState<DailyStats | null>(null);
   const [entries, setEntries] = useState<FoodEntry[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -62,9 +63,9 @@ export default function HomeScreen() {
   
   // Quick search states
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResult, setSearchResult] = useState<QuickSearchResult | null>(null);
+  const [searchResults, setSearchResults] = useState<QuickSearchResult[]>([]);
   const [searching, setSearching] = useState(false);
-  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     loadData();
