@@ -39,6 +39,12 @@ export default function HistoryScreen() {
   const [entries, setEntries] = useState<FoodEntry[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [stats, setStats] = useState<any>(null);
+  
+  // Edit modal states
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<FoodEntry | null>(null);
+  const [editServingSize, setEditServingSize] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     loadData();
