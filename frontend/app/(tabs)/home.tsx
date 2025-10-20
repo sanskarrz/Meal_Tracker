@@ -92,48 +92,55 @@ export default function HomeScreen() {
   };
 
   const quickSearchFood = async () => {
-    if (!searchQuery.trim()) return;
+    if (!searchQuery.trim()) {
+      setShowDropdown(false);
+      return;
+    }
     
     setSearching(true);
+    setShowDropdown(true);
     try {
       const response = await axios.post(
         `${API_URL}/api/food/search`,
         { query: searchQuery },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setSearchResult(response.data);
-      setShowSearchModal(true);
+      // Convert single result to array for dropdown
+      setSearchResults([response.data]);
     } catch (error) {
       Alert.alert('Error', 'Failed to search food');
+      setSearchResults([]);
     } finally {
       setSearching(false);
     }
   };
 
-  const addSearchResultToLog = async () => {
-    if (!searchResult) return;
-    
+  const addToLog = async (result: QuickSearchResult) => {
     setSearching(true);
     try {
       await axios.post(
         `${API_URL}/api/food/manual`,
         { 
-          food_name: searchResult.food_name,
-          serving_size: searchResult.serving_size || '1 serving'
+          food_name: result.food_name,
+          serving_size: result.serving_size || '1 serving'
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
       Alert.alert('Success!', 'Food added to your daily log');
-      setShowSearchModal(false);
+      setShowDropdown(false);
       setSearchQuery('');
-      setSearchResult(null);
+      setSearchResults([]);
       loadData(); // Refresh the list
     } catch (error) {
       Alert.alert('Error', 'Failed to add food to log');
     } finally {
       setSearching(false);
     }
+  };
+
+  const handleCameraPress = () => {
+    router.push('/(tabs)/scan');
   };
 
   const onRefresh = () => {
