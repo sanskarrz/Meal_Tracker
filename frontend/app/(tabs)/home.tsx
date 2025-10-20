@@ -977,8 +977,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  skeletonCard: {
+  loadingPlaceholder: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+  },
+  loadingText: {
+    color: 'white',
+    fontSize: 16,
+    marginTop: 12,
+  },
+  loadingCard: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 40,
     margin: 16,
-    marginBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  loadingCardText: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 12,
   },
 });
