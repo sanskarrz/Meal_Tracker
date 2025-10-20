@@ -161,6 +161,65 @@ def test_authentication():
     
     return token
 
+def test_food_search_endpoint(token):
+    """Test food search endpoint for quick search feature"""
+    print("\n=== Testing Food Search Endpoint (Quick Search Feature) ===")
+    headers = {"Authorization": f"Bearer {token}"}
+    
+    # Test search with "apple"
+    print("Testing food search with 'apple'...")
+    search_data = {"query": "apple"}
+    response = make_request("POST", "/food/search", search_data, headers)
+    
+    if response and response.status_code == 200:
+        data = response.json()
+        required_fields = ["food_name", "calories", "protein", "carbs", "fats"]
+        if all(field in data for field in required_fields):
+            log_test("food_search", "apple_search", "PASS", f"Apple search: {data['food_name']} - {data['calories']} cal, P:{data['protein']}g, C:{data['carbs']}g, F:{data['fats']}g")
+        else:
+            missing = [f for f in required_fields if f not in data]
+            log_test("food_search", "apple_search", "FAIL", f"Missing fields: {missing}")
+    else:
+        log_test("food_search", "apple_search", "FAIL", f"Apple search failed: {response.status_code if response else 'No response'}")
+    
+    # Test search with "chicken breast"
+    print("Testing food search with 'chicken breast'...")
+    search_data = {"query": "chicken breast"}
+    response = make_request("POST", "/food/search", search_data, headers)
+    
+    if response and response.status_code == 200:
+        data = response.json()
+        required_fields = ["food_name", "calories", "protein", "carbs", "fats"]
+        if all(field in data for field in required_fields):
+            log_test("food_search", "chicken_search", "PASS", f"Chicken search: {data['food_name']} - {data['calories']} cal, P:{data['protein']}g, C:{data['carbs']}g, F:{data['fats']}g")
+        else:
+            missing = [f for f in required_fields if f not in data]
+            log_test("food_search", "chicken_search", "FAIL", f"Missing fields: {missing}")
+    else:
+        log_test("food_search", "chicken_search", "FAIL", f"Chicken search failed: {response.status_code if response else 'No response'}")
+    
+    # Test search with empty query
+    print("Testing food search with empty query...")
+    search_data = {"query": ""}
+    response = make_request("POST", "/food/search", search_data, headers)
+    
+    if response:
+        if response.status_code in [200, 400]:
+            log_test("food_search", "empty_query", "PASS", f"Empty query handled gracefully: {response.status_code}")
+        else:
+            log_test("food_search", "empty_query", "FAIL", f"Unexpected status for empty query: {response.status_code}")
+    else:
+        log_test("food_search", "empty_query", "FAIL", "No response for empty query")
+    
+    # Test authentication requirement
+    print("Testing food search without authentication...")
+    response = make_request("POST", "/food/search", {"query": "banana"})
+    
+    if response and response.status_code == 401:
+        log_test("food_search", "auth_required", "PASS", "Correctly requires authentication")
+    else:
+        log_test("food_search", "auth_required", "FAIL", f"Should require auth, got: {response.status_code if response else 'No response'}")
+
 def test_food_analysis(token):
     """Test food analysis features"""
     print("\n=== Testing Food Analysis Features ===")
@@ -168,7 +227,7 @@ def test_food_analysis(token):
     
     # Test manual food entry
     print("Testing manual food entry...")
-    manual_food_data = {"food_name": "grilled chicken breast"}
+    manual_food_data = {"food_name": "grilled chicken breast", "serving_size": "150g"}
     response = make_request("POST", "/food/manual", manual_food_data, headers)
     
     if response and response.status_code == 200:
