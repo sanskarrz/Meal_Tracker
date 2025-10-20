@@ -414,6 +414,83 @@ export default function HomeScreen() {
           ))
         )}
       </ScrollView>
+
+      {/* Edit Modal */}
+      <Modal
+        visible={editModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setEditModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Edit Meal</Text>
+              <TouchableOpacity onPress={() => setEditModalVisible(false)}>
+                <Ionicons name="close-circle" size={28} color="#999" />
+              </TouchableOpacity>
+            </View>
+            
+            {editingEntry && (
+              <View style={styles.editContainer}>
+                <Text style={styles.editFoodName}>{editingEntry.food_name}</Text>
+                
+                <View style={styles.editInfoCard}>
+                  <View style={styles.editInfoRow}>
+                    <Text style={styles.editLabel}>Calories:</Text>
+                    <Text style={styles.editValue}>{editingEntry.calories} cal</Text>
+                  </View>
+                  <View style={styles.editInfoRow}>
+                    <Text style={styles.editLabel}>Protein:</Text>
+                    <Text style={styles.editValue}>{editingEntry.protein}g</Text>
+                  </View>
+                  <View style={styles.editInfoRow}>
+                    <Text style={styles.editLabel}>Carbs:</Text>
+                    <Text style={styles.editValue}>{editingEntry.carbs}g</Text>
+                  </View>
+                  <View style={styles.editInfoRow}>
+                    <Text style={styles.editLabel}>Fats:</Text>
+                    <Text style={styles.editValue}>{editingEntry.fats}g</Text>
+                  </View>
+                </View>
+                
+                <View style={styles.inputContainer}>
+                  <Ionicons name="scale-outline" size={20} color="#36B37E" />
+                  <TextInput
+                    style={styles.editInput}
+                    placeholder="Serving size (e.g., '1 cup', '100g')"
+                    value={editServingSize}
+                    onChangeText={setEditServingSize}
+                    placeholderTextColor="#999"
+                  />
+                </View>
+                
+                <TouchableOpacity
+                  style={styles.saveButton}
+                  onPress={saveEdit}
+                  disabled={loading}
+                >
+                  <LinearGradient
+                    colors={['#36B37E', '#2A9D68']}
+                    style={styles.saveButtonGradient}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                  >
+                    {loading ? (
+                      <ActivityIndicator color="white" />
+                    ) : (
+                      <>
+                        <Ionicons name="checkmark-circle" size={20} color="white" />
+                        <Text style={styles.saveButtonText}>Save Changes</Text>
+                      </>
+                    )}
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
