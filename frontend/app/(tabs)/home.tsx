@@ -983,4 +983,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  skeletonCard: {
+    margin: 16,
+    marginBottom: 12,
+  },
 });
