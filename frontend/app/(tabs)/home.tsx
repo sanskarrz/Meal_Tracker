@@ -190,18 +190,75 @@ export default function HomeScreen() {
               style={styles.searchInput}
               placeholder="Quick check calories..."
               value={searchQuery}
-              onChangeText={setSearchQuery}
+              onChangeText={(text) => {
+                setSearchQuery(text);
+                if (!text.trim()) {
+                  setShowDropdown(false);
+                  setSearchResults([]);
+                }
+              }}
               onSubmitEditing={quickSearchFood}
               placeholderTextColor="#999"
             />
             {searching ? (
               <ActivityIndicator size="small" color="#36B37E" />
             ) : (
-              <TouchableOpacity onPress={quickSearchFood}>
-                <Ionicons name="arrow-forward-circle" size={24} color="#36B37E" />
-              </TouchableOpacity>
+              <>
+                <TouchableOpacity onPress={quickSearchFood} style={styles.searchButton}>
+                  <Ionicons name="arrow-forward-circle" size={24} color="#36B37E" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleCameraPress} style={styles.cameraButton}>
+                  <Ionicons name="camera" size={24} color="#403294" />
+                </TouchableOpacity>
+              </>
             )}
           </View>
+          
+          {/* Dropdown Search Results */}
+          {showDropdown && searchResults.length > 0 && (
+            <View style={styles.dropdown}>
+              {searchResults.map((result, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.dropdownItem}
+                  onPress={() => addToLog(result)}
+                >
+                  <View style={styles.dropdownLeft}>
+                    <View style={styles.foodIconPlaceholder}>
+                      <Ionicons name="fast-food" size={24} color="#36B37E" />
+                    </View>
+                    <View style={styles.dropdownInfo}>
+                      <Text style={styles.dropdownFoodName}>{result.food_name}</Text>
+                      {result.serving_size && (
+                        <Text style={styles.dropdownServing}>{result.serving_size}</Text>
+                      )}
+                      <View style={styles.dropdownMacros}>
+                        <Text style={styles.dropdownMacroText}>P: {result.protein}g</Text>
+                        <Text style={styles.dropdownMacroText}>C: {result.carbs}g</Text>
+                        <Text style={styles.dropdownMacroText}>F: {result.fats}g</Text>
+                      </View>
+                    </View>
+                  </View>
+                  <View style={styles.dropdownRight}>
+                    <Text style={styles.dropdownCalories}>{result.calories}</Text>
+                    <Text style={styles.dropdownCaloriesLabel}>cal</Text>
+                    <Ionicons name="add-circle" size={24} color="#36B37E" style={styles.addIcon} />
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+          
+          {/* Empty State while searching */}
+          {showDropdown && !searching && searchResults.length === 0 && searchQuery.trim() && (
+            <View style={styles.dropdown}>
+              <View style={styles.dropdownEmpty}>
+                <Ionicons name="search-outline" size={32} color="#ccc" />
+                <Text style={styles.dropdownEmptyText}>No results found</Text>
+                <Text style={styles.dropdownEmptySubtext}>Try a different search term</Text>
+              </View>
+            </View>
+          )}
         </View>
       </LinearGradient>
 
