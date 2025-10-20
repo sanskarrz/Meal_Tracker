@@ -67,6 +67,11 @@ export default function HomeScreen() {
   const [searchResults, setSearchResults] = useState<QuickSearchResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  
+  // Edit modal states
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<FoodEntry | null>(null);
+  const [editServingSize, setEditServingSize] = useState('');
 
   useEffect(() => {
     loadData();
