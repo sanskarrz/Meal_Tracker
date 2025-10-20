@@ -211,21 +211,31 @@ export default function HomeScreen() {
   const saveEdit = async () => {
     if (!editingEntry) return;
     
+    if (!editServingSize.trim()) {
+      Alert.alert('Validation Error', 'Please enter a serving size');
+      return;
+    }
+    
     setLoading(true);
     try {
-      // Update the entry with new serving size
       await axios.put(
         `${API_URL}/api/food/${editingEntry.id}`,
         { serving_size: editServingSize },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` }, timeout: 10000 }
       );
       
-      Alert.alert('Success!', 'Meal updated successfully');
+      Alert.alert('Success!', `${editingEntry.food_name} updated successfully`);
       setEditModalVisible(false);
       setEditingEntry(null);
-      loadData(); // Refresh the list
-    } catch (error) {
-      Alert.alert('Error', 'Failed to update meal');
+      loadData();
+    } catch (error: any) {
+      console.error('Edit error:', error);
+      const errorMsg = error.response?.status === 401 
+        ? 'Session expired. Please log in again.'
+        : error.response?.status === 404
+        ? 'Meal not found. It may have been deleted.'
+        : error.response?.data?.detail || 'Failed to update meal. Please try again.';
+      Alert.alert('Error', errorMsg);
     } finally {
       setLoading(false);
     }
@@ -237,7 +247,7 @@ export default function HomeScreen() {
   };
 
   const deleteEntry = async (entryId: string) => {
-    Alert.alert('Delete Entry', 'Are you sure you want to delete this entry?', [
+    Alert.alert('Delete Entry', 'Are you sure you want to delete this meal?', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete',
@@ -246,10 +256,18 @@ export default function HomeScreen() {
           try {
             await axios.delete(`${API_URL}/api/food/${entryId}`, {
               headers: { Authorization: `Bearer ${token}` },
+              timeout: 10000,
             });
+            Alert.alert('Success', 'Meal deleted successfully');
             loadData();
-          } catch (error) {
-            Alert.alert('Error', 'Failed to delete entry');
+          } catch (error: any) {
+            console.error('Delete error:', error);
+            const errorMsg = error.response?.status === 401 
+              ? 'Session expired. Please log in again.'
+              : error.response?.status === 404
+              ? 'Meal not found. It may have been already deleted.'
+              : error.response?.data?.detail || 'Failed to delete meal. Please try again.';
+            Alert.alert('Error', errorMsg);
           }
         },
       },
