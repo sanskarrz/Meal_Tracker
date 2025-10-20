@@ -277,9 +277,17 @@ export default function HomeScreen() {
                   onPress={() => addToLog(result)}
                 >
                   <View style={styles.dropdownLeft}>
-                    <View style={styles.foodIconPlaceholder}>
-                      <Ionicons name="fast-food" size={24} color="#36B37E" />
-                    </View>
+                    {result.image_url ? (
+                      <Image 
+                        source={{ uri: result.image_url }} 
+                        style={styles.dropdownFoodImage}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <View style={styles.foodIconPlaceholder}>
+                        <Ionicons name="fast-food" size={24} color="#36B37E" />
+                      </View>
+                    )}
                     <View style={styles.dropdownInfo}>
                       <Text style={styles.dropdownFoodName}>{result.food_name}</Text>
                       {result.serving_size && (
