@@ -26,7 +26,10 @@ export default function AddScreen() {
   const [servingSize, setServingSize] = useState('1 serving');
   const [recipeText, setRecipeText] = useState('');
   const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<any>(null);
+  const [showResultModal, setShowResultModal] = useState(false);
   const { token } = useAuth();
+  const fadeAnim = useState(new Animated.Value(0))[0];
 
   const addManualFood = async () => {
     if (!foodName.trim()) {
