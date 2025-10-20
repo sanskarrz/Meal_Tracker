@@ -401,9 +401,14 @@ export default function HomeScreen() {
               <View style={styles.entryRight}>
                 <Text style={styles.entryCalories}>{entry.calories}</Text>
                 <Text style={styles.entryCaloriesLabel}>cal</Text>
-                <TouchableOpacity onPress={() => deleteEntry(entry.id)} style={styles.deleteButton}>
-                  <Ionicons name="trash-outline" size={20} color="#FF5252" />
-                </TouchableOpacity>
+                <View style={styles.actionButtons}>
+                  <TouchableOpacity onPress={() => openEditModal(entry)} style={styles.editButton}>
+                    <Ionicons name="pencil-outline" size={20} color="#36B37E" />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => deleteEntry(entry.id)} style={styles.deleteButton}>
+                    <Ionicons name="trash-outline" size={20} color="#FF5252" />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           ))
