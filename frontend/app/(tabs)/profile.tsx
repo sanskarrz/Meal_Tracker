@@ -68,12 +68,12 @@ export default function ProfileScreen() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>About</Text>
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={showHowTo}>
             <Ionicons name="information-circle-outline" size={24} color="#36B37E" />
             <Text style={styles.menuText}>How to use</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={showFAQ}>
             <Ionicons name="help-circle-outline" size={24} color="#36B37E" />
             <Text style={styles.menuText}>FAQ</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
