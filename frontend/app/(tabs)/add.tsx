@@ -88,17 +88,6 @@ export default function AddScreen() {
     setServingSize('1 serving');
     setResult(null);
   };
-              setServingSize('1 serving');
-            },
-          },
-        ]
-      );
-    } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.detail || 'Failed to add food');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const analyzeRecipe = async () => {
     if (!recipeText.trim()) {
