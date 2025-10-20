@@ -492,7 +492,7 @@ export default function HomeScreen() {
                   <TouchableOpacity onPress={() => openEditModal(entry)} style={styles.editButton}>
                     <Ionicons name="pencil-outline" size={20} color="#36B37E" />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => deleteEntry(entry.id)} style={styles.deleteButton}>
+                  <TouchableOpacity onPress={() => deleteEntry(entry)} style={styles.deleteButton}>
                     <Ionicons name="trash-outline" size={20} color="#FF5252" />
                   </TouchableOpacity>
                 </View>
