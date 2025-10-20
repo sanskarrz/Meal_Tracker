@@ -7,6 +7,10 @@ import {
   TouchableOpacity,
   RefreshControl,
   Image,
+  Alert,
+  Modal,
+  TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
