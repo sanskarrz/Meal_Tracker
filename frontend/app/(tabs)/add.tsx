@@ -462,4 +462,68 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 24,
+    width: '90%',
+    maxWidth: 400,
+  },
+  modalHeader: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  modalCloseButton: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    padding: 8,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  nutritionGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginBottom: 24,
+  },
+  nutritionItem: {
+    flex: 1,
+    minWidth: '45%',
+    backgroundColor: '#F5F5F5',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  nutritionLabel: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 4,
+  },
+  nutritionValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#36B37E',
+  },
+  modalButton: {
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
 });
