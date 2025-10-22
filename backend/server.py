@@ -449,7 +449,7 @@ async def delete_food_entry(entry_id: str, current_user = Depends(get_current_us
 
 @app.put("/api/food/{entry_id}")
 async def update_food_entry(entry_id: str, request: dict, current_user = Depends(get_current_user)):
-    """Update a food entry (mainly serving size)"""
+    """Update a food entry - recalculates nutrition based on new serving size"""
     try:
         # Get the existing entry
         entry = food_entries_collection.find_one({
@@ -463,18 +463,39 @@ async def update_food_entry(entry_id: str, request: dict, current_user = Depends
         # Update serving size if provided
         new_serving_size = request.get("serving_size")
         if new_serving_size:
-            # Recalculate nutrition based on new serving size if needed
-            # For now, just update the serving size field
+            # Recalculate nutrition based on the new serving size
+            food_name = entry.get("food_name", "Unknown Food")
+            old_serving_size = entry.get("serving_size", "1 serving")
+            
+            # Use AI to recalculate nutrition for the new serving size
+            prompt = f"Recalculate nutrition for {food_name}. Original was {old_serving_size}, new serving is {new_serving_size}. Provide accurate values for Indian market."
+            nutrition_data = await analyze_food_with_gemini(text_query=prompt)
+            
+            # Update the entry with new nutrition values
+            update_data = {
+                "serving_size": new_serving_size,
+                "calories": nutrition_data.get("calories", entry.get("calories", 0)),
+                "protein": nutrition_data.get("protein", entry.get("protein", 0)),
+                "carbs": nutrition_data.get("carbs", entry.get("carbs", 0)),
+                "fats": nutrition_data.get("fats", entry.get("fats", 0))
+            }
+            
             result = food_entries_collection.update_one(
                 {"_id": ObjectId(entry_id)},
-                {"$set": {"serving_size": new_serving_size}}
+                {"$set": update_data}
             )
             
             if result.modified_count == 0:
                 raise HTTPException(status_code=400, detail="Failed to update entry")
+            
+            return {
+                "message": "Food entry updated successfully",
+                "updated_values": update_data
+            }
         
-        return {"message": "Food entry updated successfully"}
+        return {"message": "No updates provided"}
     except Exception as e:
+        print(f"Error updating entry: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error updating food entry: {str(e)}")
 
 
