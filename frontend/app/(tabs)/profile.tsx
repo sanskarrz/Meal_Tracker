@@ -50,6 +50,39 @@ export default function ProfileScreen() {
   const showHowTo = () => {
     setHowToModalVisible(true);
   };
+  
+  const openEditGoalModal = () => {
+    setNewGoal(String(user?.daily_calorie_goal || 2000));
+    setEditGoalModalVisible(true);
+  };
+  
+  const saveGoal = async () => {
+    const goalValue = parseInt(newGoal);
+    if (isNaN(goalValue) || goalValue < 500 || goalValue > 10000) {
+      Alert.alert('Invalid Goal', 'Please enter a valid calorie goal between 500 and 10000');
+      return;
+    }
+    
+    setSavingGoal(true);
+    try {
+      await axios.put(
+        `${API_URL}/api/auth/update-goal`,
+        { daily_calorie_goal: goalValue },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      Alert.alert('Success', 'Daily calorie goal updated successfully!');
+      setEditGoalModalVisible(false);
+      
+      // Refresh the page to get updated user data
+      router.replace('/(tabs)/profile');
+    } catch (error: any) {
+      console.error('Error updating goal:', error);
+      Alert.alert('Error', error.response?.data?.detail || 'Failed to update goal');
+    } finally {
+      setSavingGoal(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
