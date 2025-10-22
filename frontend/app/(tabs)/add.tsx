@@ -22,6 +22,9 @@ import axios from 'axios';
 const API_URL = process.env.EXPO_PUBLIC_BACKEND_URL || '';
 
 export default function AddScreen() {
+  const { token } = useAuth();
+  const router = useRouter();
+  
   const [mode, setMode] = useState<'manual' | 'recipe'>('manual');
   const [foodName, setFoodName] = useState('');
   const [servingSize, setServingSize] = useState('1 serving');
