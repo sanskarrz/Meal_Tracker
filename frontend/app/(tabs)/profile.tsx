@@ -98,7 +98,13 @@ export default function ProfileScreen() {
 
       <ScrollView style={styles.content}>
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Daily Goal</Text>
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardTitle}>Daily Goal</Text>
+            <TouchableOpacity onPress={openEditGoalModal} style={styles.editButton}>
+              <Ionicons name="create-outline" size={20} color="#36B37E" />
+              <Text style={styles.editButtonText}>Edit</Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.goalRow}>
             <View style={styles.goalInfo}>
               <Ionicons name="flame" size={32} color="#36B37E" />
