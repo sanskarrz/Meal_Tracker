@@ -261,6 +261,37 @@ async def get_me(current_user = Depends(get_current_user)):
         "daily_calorie_goal": current_user.get("daily_calorie_goal", 2000)
     }
 
+@app.put("/api/auth/update-goal")
+async def update_calorie_goal(request: dict, current_user = Depends(get_current_user)):
+    """Update user's daily calorie goal"""
+    try:
+        new_goal = request.get("daily_calorie_goal")
+        
+        if not new_goal or not isinstance(new_goal, (int, float)):
+            raise HTTPException(status_code=400, detail="Invalid calorie goal value")
+        
+        if new_goal < 500 or new_goal > 10000:
+            raise HTTPException(status_code=400, detail="Calorie goal must be between 500 and 10000")
+        
+        # Update the user's goal
+        result = users_collection.update_one(
+            {"_id": current_user["_id"]},
+            {"$set": {"daily_calorie_goal": int(new_goal)}}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=400, detail="Failed to update goal")
+        
+        return {
+            "message": "Daily calorie goal updated successfully",
+            "daily_calorie_goal": int(new_goal)
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error updating goal: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error updating calorie goal: {str(e)}")
+
 # Food Analysis Routes
 @app.post("/api/food/search")
 async def search_food(request: QuickSearchRequest, current_user = Depends(get_current_user)):
