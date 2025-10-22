@@ -474,7 +474,6 @@ export default function HomeScreen() {
                   <Image 
                     source={{ uri: getStockFoodImage(entry.food_name) }} 
                     style={styles.entryImage}
-                    defaultSource={require('../../assets/food-placeholder.png')}
                   />
                 )}
                 <View style={styles.entryInfo}>
