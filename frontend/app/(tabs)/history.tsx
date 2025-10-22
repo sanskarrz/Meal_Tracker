@@ -81,6 +81,11 @@ export default function HistoryScreen() {
     setSelectedDate(newDate);
   };
 
+  const getStockFoodImage = (foodName: string): string => {
+    // Generate a consistent stock food image URL based on food name
+    return `https://source.unsplash.com/150x150/?${encodeURIComponent(foodName)},food`;
+  };
+
   const openEditModal = (entry: FoodEntry) => {
     setEditingEntry(entry);
     setEditServingSize(entry.serving_size || '1 serving');
