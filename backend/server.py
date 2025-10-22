@@ -137,18 +137,18 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     return user
 
 async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_query: Optional[str] = None) -> Dict[str, Any]:
-    """Analyze food using Gemini Vision API"""
+    """Analyze food using OpenAI Vision API (GPT-4o) - optimized for Indian food items"""
     try:
-        # Create chat instance
+        # Create chat instance with OpenAI GPT-4o
         chat = LlmChat(
             api_key=EMERGENT_LLM_KEY,
             session_id=f"food_analysis_{datetime.now().timestamp()}",
-            system_message="You are a nutrition expert. Analyze food items and provide detailed nutritional information in JSON format."
-        ).with_model("gemini", "gemini-2.0-flash")
+            system_message="You are a nutrition expert specializing in Indian and South Asian cuisine. Analyze food items accurately and provide detailed nutritional information in JSON format. If you cannot confidently identify the food item in an image, set confidence to 'low' and food_name to 'Unknown Food'. Be accurate with portion sizes common in India."
+        ).with_model("openai", "gpt-4o")
         
         # Prepare prompt
         if image_base64 and text_query:
-            prompt = f"{text_query}. Return ONLY a JSON object with: food_name (string), calories (number), protein (number in grams), carbs (number in grams), fats (number in grams), serving_size (string like '1 cup', '100g', '1 medium'), confidence (string: high/medium/low)."
+            prompt = f"{text_query}. For Indian foods, use common Indian serving sizes (e.g., '1 roti', '1 katori', '1 plate'). Return ONLY a valid JSON object with: food_name (string), calories (number), protein (number in grams), carbs (number in grams), fats (number in grams), serving_size (string), confidence (string: high/medium/low). Set confidence to 'low' if you cannot clearly identify the food."
             # Create image content
             image_content = ImageContent(image_base64=image_base64)
             message = UserMessage(
@@ -156,14 +156,14 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
                 file_contents=[image_content]
             )
         elif image_base64:
-            prompt = "Identify this food item and provide nutritional information. Estimate the serving size shown in the image. Return ONLY a JSON object with: food_name (string), calories (number), protein (number in grams), carbs (number in grams), fats (number in grams), serving_size (string like '1 cup', '100g', '1 medium'), confidence (string: high/medium/low)."
+            prompt = "Carefully identify this food item and provide nutritional information. Consider Indian and South Asian dishes. Estimate the serving size shown in the image using appropriate units (for Indian foods: roti, katori, plate, cup, bowl, etc.). Return ONLY a valid JSON object with: food_name (string - specific name), calories (number), protein (number in grams), carbs (number in grams), fats (number in grams), serving_size (string), confidence (string: high/medium/low). IMPORTANT: If you cannot clearly see or identify the food, or if the image quality is poor, set confidence to 'low' and food_name to 'Unknown Food'."
             image_content = ImageContent(image_base64=image_base64)
             message = UserMessage(
                 text=prompt,
                 file_contents=[image_content]
             )
         else:
-            prompt = f"Provide nutritional information for: {text_query}. Return ONLY a JSON object with: food_name (string), calories (number), protein (number in grams), carbs (number in grams), fats (number in grams), serving_size (string like '1 cup', '100g', '1 serving'), confidence (string: high/medium/low)."
+            prompt = f"Provide accurate nutritional information for: {text_query}. Consider Indian market context and common serving sizes. For Indian foods, use units like '1 roti', '1 katori', '1 plate', '1 bowl'. Return ONLY a valid JSON object with: food_name (string), calories (number), protein (number in grams), carbs (number in grams), fats (number in grams), serving_size (string), confidence (string: high/medium/low)."
             message = UserMessage(text=prompt)
         
         # Get response
@@ -173,12 +173,12 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
         import json
         import re
         
-        # Try to extract JSON from response
-        json_match = re.search(r'\{[^{}]*\}', response)
+        # Try to extract JSON from response - handle both single object and nested
+        json_match = re.search(r'\{(?:[^{}]|\{[^{}]*\})*\}', response)
         if json_match:
             nutrition_data = json.loads(json_match.group())
         else:
-            # Fallback parsing
+            # Fallback parsing if no JSON found
             nutrition_data = {
                 "food_name": "Unknown Food",
                 "calories": 200,
@@ -193,20 +193,23 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
         if "serving_size" not in nutrition_data:
             nutrition_data["serving_size"] = "1 serving"
         
+        # Reject low confidence results for image analysis
+        if image_base64 and nutrition_data.get("confidence") == "low":
+            raise HTTPException(
+                status_code=400, 
+                detail="Unable to confidently identify the food item. Please try again with a clearer image or enter the food name manually."
+            )
+        
         return nutrition_data
+    except HTTPException:
+        raise
     except Exception as e:
-        print(f"Error in Gemini analysis: {str(e)}")
-        # Return default values on error
-        return {
-            "food_name": "Unknown Food",
-            "calories": 200,
-            "protein": 10,
-            "carbs": 20,
-            "fats": 8,
-            "serving_size": "1 serving",
-            "confidence": "low",
-            "error": str(e)
-        }
+        print(f"Error in OpenAI analysis: {str(e)}")
+        # Return error response
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to analyze food item: {str(e)}"
+        )
 
 # Routes
 @app.get("/api/health")
