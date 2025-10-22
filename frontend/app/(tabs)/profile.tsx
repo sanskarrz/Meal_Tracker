@@ -372,6 +372,23 @@ export default function ProfileScreen() {
           </View>
         </View>
       </Modal>
+      
+      {/* Success Modal */}
+      <Modal
+        visible={successModalVisible}
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={styles.successOverlay}>
+          <View style={styles.successContent}>
+            <View style={styles.checkmarkCircle}>
+              <Ionicons name="checkmark" size={48} color="white" />
+            </View>
+            <Text style={styles.successText}>Goal Saved!</Text>
+            <Text style={styles.successSubtext}>Your daily calorie goal has been updated</Text>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
