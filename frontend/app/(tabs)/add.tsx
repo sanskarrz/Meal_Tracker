@@ -82,10 +82,28 @@ export default function AddScreen() {
   };
 
   const addToLog = async () => {
-    Alert.alert('Success!', `${result.food_name} added to your daily log`);
     setShowResultModal(false);
-    setFoodName('');
-    setServingSize('1 serving');
+    Alert.alert('Success!', `${result.food_name} added to your daily log`);
+    
+    // Reset forms
+    if (mode === 'manual') {
+      setFoodName('');
+      setServingSize('1 serving');
+    } else {
+      setRecipeText('');
+    }
+    setResult(null);
+  };
+
+  const closeResultModal = () => {
+    setShowResultModal(false);
+    // Reset forms
+    if (mode === 'manual') {
+      setFoodName('');
+      setServingSize('1 serving');
+    } else {
+      setRecipeText('');
+    }
     setResult(null);
   };
 
