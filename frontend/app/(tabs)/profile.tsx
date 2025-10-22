@@ -618,4 +618,73 @@ const styles = StyleSheet.create({
     color: '#666',
     lineHeight: 20,
   },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  editButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 8,
+    gap: 4,
+  },
+  editButtonText: {
+    color: '#36B37E',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginVertical: 20,
+    gap: 12,
+  },
+  input: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  inputUnit: {
+    fontSize: 14,
+    color: '#666',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 24,
+  },
+  modalButton: {
+    flex: 1,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  cancelButton: {
+    backgroundColor: '#F5F5F5',
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    color: '#666',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  saveButton: {
+    overflow: 'hidden',
+  },
+  buttonGradient: {
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });
