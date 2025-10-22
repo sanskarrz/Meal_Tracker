@@ -20,7 +20,7 @@ import axios from 'axios';
 const API_URL = process.env.EXPO_PUBLIC_BACKEND_URL || '';
 
 export default function ProfileScreen() {
-  const { user, logout, token } = useAuth();
+  const { user, logout, token, refreshUser } = useAuth();
   const router = useRouter();
   
   // Modal states
@@ -28,6 +28,7 @@ export default function ProfileScreen() {
   const [faqModalVisible, setFaqModalVisible] = useState(false);
   const [howToModalVisible, setHowToModalVisible] = useState(false);
   const [editGoalModalVisible, setEditGoalModalVisible] = useState(false);
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
   
   // Edit goal state
   const [newGoal, setNewGoal] = useState(String(user?.daily_calorie_goal || 2000));
