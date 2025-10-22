@@ -83,7 +83,24 @@ export default function AddScreen() {
 
   const addToLog = async () => {
     setShowResultModal(false);
-    Alert.alert('Success!', `${result.food_name} added to your daily log`);
+    
+    // Show success confirmation
+    setTimeout(() => {
+      Alert.alert(
+        '✓ Food Added!', 
+        `${result.food_name} has been added to your daily log`,
+        [
+          {
+            text: 'View on Home',
+            onPress: () => router.push('/(tabs)/home')
+          },
+          {
+            text: 'Add More',
+            style: 'cancel'
+          }
+        ]
+      );
+    }, 300);
     
     // Reset forms
     if (mode === 'manual') {
@@ -97,6 +114,25 @@ export default function AddScreen() {
 
   const closeResultModal = () => {
     setShowResultModal(false);
+    
+    // Show success message and navigate to home
+    setTimeout(() => {
+      Alert.alert(
+        '✓ Food Added!', 
+        `${result?.food_name || 'Food'} has been added to your daily log`,
+        [
+          {
+            text: 'View on Home',
+            onPress: () => router.push('/(tabs)/home')
+          },
+          {
+            text: 'OK',
+            style: 'cancel'
+          }
+        ]
+      );
+    }, 300);
+    
     // Reset forms
     if (mode === 'manual') {
       setFoodName('');
