@@ -203,9 +203,10 @@ export default function HistoryScreen() {
                 {entry.image_base64 ? (
                   <Image source={{ uri: `data:image/jpeg;base64,${entry.image_base64}` }} style={styles.entryImage} />
                 ) : (
-                  <View style={[styles.entryImage, styles.entryImagePlaceholder]}>
-                    <Ionicons name="fast-food" size={24} color="#36B37E" />
-                  </View>
+                  <Image 
+                    source={{ uri: getStockFoodImage(entry.food_name) }} 
+                    style={styles.entryImage}
+                  />
                 )}
                 <View style={styles.entryInfo}>
                   <Text style={styles.entryName}>{entry.food_name}</Text>
