@@ -294,6 +294,73 @@ export default function ProfileScreen() {
           </View>
         </View>
       </Modal>
+      
+      {/* Edit Goal Modal */}
+      <Modal
+        visible={editGoalModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setEditGoalModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Edit Daily Calorie Goal</Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setEditGoalModalVisible(false)}
+              >
+                <Ionicons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+            
+            <Text style={styles.modalDescription}>
+              Set your target daily calorie intake. Recommended range: 1200-3000 calories.
+            </Text>
+            
+            <View style={styles.inputContainer}>
+              <Ionicons name="flame-outline" size={24} color="#36B37E" />
+              <TextInput
+                style={styles.input}
+                value={newGoal}
+                onChangeText={setNewGoal}
+                keyboardType="numeric"
+                placeholder="Enter calorie goal"
+                placeholderTextColor="#999"
+              />
+              <Text style={styles.inputUnit}>cal/day</Text>
+            </View>
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => setEditGoalModalVisible(false)}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.modalButton, styles.saveButton]}
+                onPress={saveGoal}
+                disabled={savingGoal}
+              >
+                <LinearGradient
+                  colors={['#36B37E', '#2A9D68']}
+                  style={styles.buttonGradient}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                >
+                  {savingGoal ? (
+                    <ActivityIndicator color="white" />
+                  ) : (
+                    <Text style={styles.saveButtonText}>Save</Text>
+                  )}
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
