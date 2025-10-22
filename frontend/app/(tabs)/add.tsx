@@ -277,6 +277,65 @@ export default function AddScreen() {
           )}
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* Result Modal */}
+      <Modal
+        visible={showResultModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={closeResultModal}
+      >
+        <View style={styles.modalOverlay}>
+          <Animated.View style={[styles.modalContent, { opacity: fadeAnim }]}>
+            <View style={styles.modalHeader}>
+              <Ionicons name="checkmark-circle" size={48} color="#36B37E" />
+              <TouchableOpacity
+                style={styles.modalCloseButton}
+                onPress={closeResultModal}
+              >
+                <Ionicons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+
+            {result && (
+              <>
+                <Text style={styles.modalTitle}>{result.food_name}</Text>
+                <Text style={styles.modalSubtitle}>Nutritional Information</Text>
+
+                <View style={styles.nutritionGrid}>
+                  <View style={styles.nutritionItem}>
+                    <Text style={styles.nutritionLabel}>Calories</Text>
+                    <Text style={styles.nutritionValue}>{result.calories}</Text>
+                  </View>
+                  <View style={styles.nutritionItem}>
+                    <Text style={styles.nutritionLabel}>Protein</Text>
+                    <Text style={styles.nutritionValue}>{result.protein}g</Text>
+                  </View>
+                  <View style={styles.nutritionItem}>
+                    <Text style={styles.nutritionLabel}>Carbs</Text>
+                    <Text style={styles.nutritionValue}>{result.carbs}g</Text>
+                  </View>
+                  <View style={styles.nutritionItem}>
+                    <Text style={styles.nutritionLabel}>Fats</Text>
+                    <Text style={styles.nutritionValue}>{result.fats}g</Text>
+                  </View>
+                </View>
+
+                <TouchableOpacity style={styles.modalButton} onPress={addToLog}>
+                  <LinearGradient
+                    colors={['#36B37E', '#2A9D68']}
+                    style={styles.buttonGradient}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                  >
+                    <Text style={styles.buttonText}>Close</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </>
+            )}
+          </Animated.View>
+        </View>
+      </Modal>
     </View>
   );
 }
