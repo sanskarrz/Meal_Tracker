@@ -100,23 +100,35 @@ export default function AddScreen() {
       const response = await axios.post(
         `${API_URL}/api/food/analyze-recipe`,
         { recipe_text: recipeText },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { 
+          headers: { Authorization: `Bearer ${token}` },
+          timeout: 15000
+        }
       );
 
-      Alert.alert(
-        'Recipe Analyzed!',
-        `${response.data.food_name}\nTotal Calories: ${response.data.calories}\nProtein: ${response.data.protein}g\nCarbs: ${response.data.carbs}g\nFats: ${response.data.fats}g`,
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              setRecipeText('');
-            },
-          },
-        ]
-      );
+      setResult(response.data);
+      setShowResultModal(true);
+      
+      // Trigger fade-in animation
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+
     } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.detail || 'Failed to analyze recipe');
+      console.error('Error analyzing recipe:', error);
+      let errorMessage = 'Failed to analyze recipe. Please try again.';
+      
+      if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Analysis took too long. Please try again.';
+      } else if (error.response?.status === 401) {
+        errorMessage = 'Session expired. Please log in again.';
+      } else if (error.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      }
+      
+      Alert.alert('Error', errorMessage);
     } finally {
       setLoading(false);
     }
