@@ -673,27 +673,27 @@ const styles = StyleSheet.create({
     height: 48,
     gap: 12,
   },
+  searchIcon: {
+    marginRight: 4,
+  },
   searchInput: {
     flex: 1,
     fontSize: 16,
     color: '#333',
   },
-  searchButton: {
-    padding: 8,
-    minWidth: 44,
-    minHeight: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cameraButton: {
-    padding: 8,
+  searchIconRight: {
     marginLeft: 8,
-    minWidth: 44,
-    minHeight: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 22,
+  },
+  searchButtonIntegrated: {
+    padding: 4,
+    marginLeft: 4,
+  },
+  cameraButtonIntegrated: {
+    padding: 4,
+    marginLeft: 4,
+    borderLeftWidth: 1,
+    borderLeftColor: '#E0E0E0',
+    paddingLeft: 12,
   },
   dropdown: {
     backgroundColor: 'white',
