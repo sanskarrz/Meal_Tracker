@@ -381,10 +381,18 @@ async def analyze_recipe(request: RecipeAnalysisRequest, current_user = Depends(
 
 @app.post("/api/food/manual")
 async def add_manual_food(request: ManualFoodRequest, current_user = Depends(get_current_user)):
-    """Add food entry manually by name"""
+    """Add food entry manually by name with serving size"""
     try:
-        # Get nutritional info from Gemini
-        nutrition_data = await analyze_food_with_gemini(text_query=request.food_name)
+        # Build query with serving size if provided
+        query = request.food_name
+        if request.serving_size:
+            query = f"{request.food_name}, serving size: {request.serving_size}"
+        
+        # Get nutritional info from AI
+        nutrition_data = await analyze_food_with_gemini(text_query=query)
+        
+        # Use serving size from request or from AI response
+        serving_size = request.serving_size or nutrition_data.get("serving_size", "1 serving")
         
         # Save to database
         food_entry = {
@@ -394,6 +402,7 @@ async def add_manual_food(request: ManualFoodRequest, current_user = Depends(get
             "protein": nutrition_data.get("protein", 0),
             "carbs": nutrition_data.get("carbs", 0),
             "fats": nutrition_data.get("fats", 0),
+            "serving_size": serving_size,
             "entry_type": "manual",
             "timestamp": datetime.utcnow(),
             "date": datetime.utcnow().strftime("%Y-%m-%d")
@@ -406,7 +415,8 @@ async def add_manual_food(request: ManualFoodRequest, current_user = Depends(get
             "calories": nutrition_data["calories"],
             "protein": nutrition_data.get("protein", 0),
             "carbs": nutrition_data.get("carbs", 0),
-            "fats": nutrition_data.get("fats", 0)
+            "fats": nutrition_data.get("fats", 0),
+            "serving_size": serving_size
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error adding manual food: {str(e)}")
