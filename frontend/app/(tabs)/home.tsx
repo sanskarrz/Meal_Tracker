@@ -174,6 +174,11 @@ export default function HomeScreen() {
     }
   };
 
+  const getStockFoodImage = (foodName: string): string => {
+    // Generate a consistent stock food image URL based on food name
+    return `https://source.unsplash.com/150x150/?${encodeURIComponent(foodName)},food`;
+  };
+
   const addToLog = async (result: QuickSearchResult) => {
     setSearching(true);
     try {
