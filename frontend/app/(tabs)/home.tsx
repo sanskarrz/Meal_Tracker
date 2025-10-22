@@ -330,7 +330,7 @@ export default function HomeScreen() {
         {/* Quick Search Bar */}
         <View style={styles.searchContainer}>
           <View style={styles.searchBar}>
-            <Ionicons name="search" size={20} color="#999" />
+            <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
             <TextInput
               style={styles.searchInput}
               placeholder="Quick check calories..."
@@ -346,14 +346,14 @@ export default function HomeScreen() {
               placeholderTextColor="#999"
             />
             {searching ? (
-              <ActivityIndicator size="small" color="#36B37E" />
+              <ActivityIndicator size="small" color="#36B37E" style={styles.searchIconRight} />
             ) : (
               <>
-                <TouchableOpacity onPress={quickSearchFood} style={styles.searchButton}>
-                  <Ionicons name="arrow-forward-circle" size={24} color="#36B37E" />
+                <TouchableOpacity onPress={handleCameraPress} style={styles.cameraButtonIntegrated}>
+                  <Ionicons name="camera" size={22} color="#36B37E" />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={handleCameraPress} style={styles.cameraButton}>
-                  <Ionicons name="camera" size={24} color="#403294" />
+                <TouchableOpacity onPress={quickSearchFood} style={styles.searchButtonIntegrated}>
+                  <Ionicons name="arrow-forward-circle" size={24} color="#36B37E" />
                 </TouchableOpacity>
               </>
             )}
