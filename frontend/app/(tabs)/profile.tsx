@@ -72,11 +72,21 @@ export default function ProfileScreen() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      Alert.alert('Success', 'Daily calorie goal updated successfully!');
+      // Refresh user data to get updated goal
+      await refreshUser();
+      
       setEditGoalModalVisible(false);
       
-      // Refresh the page to get updated user data
-      router.replace('/(tabs)/profile');
+      // Show success modal with checkmark
+      setTimeout(() => {
+        setSuccessModalVisible(true);
+      }, 300);
+      
+      // Auto-hide success modal after 2 seconds
+      setTimeout(() => {
+        setSuccessModalVisible(false);
+      }, 2300);
+      
     } catch (error: any) {
       console.error('Error updating goal:', error);
       Alert.alert('Error', error.response?.data?.detail || 'Failed to update goal');
