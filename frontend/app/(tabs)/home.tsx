@@ -526,41 +526,52 @@ export default function HomeScreen() {
             
             {editingEntry && (
               <View style={styles.editContainer}>
-                <Text style={styles.editFoodName}>{editingEntry.food_name}</Text>
-                
-                <View style={styles.editInfoCard}>
-                  <View style={styles.editInfoRow}>
-                    <Text style={styles.editLabel}>Current Calories:</Text>
-                    <Text style={styles.editValue}>{editingEntry.calories} cal</Text>
+                {/* Editable Food Name and Serving Size in One Line */}
+                <View style={styles.editHeaderSection}>
+                  <Text style={styles.editSectionLabel}>Food & Serving</Text>
+                  <View style={styles.largeEditBox}>
+                    <TextInput
+                      style={styles.largeEditInput}
+                      value={`${editingEntry.food_name} (${editServingSize})`}
+                      onChangeText={(text) => {
+                        // Extract serving size from the text
+                        const match = text.match(/\(([^)]+)\)$/);
+                        if (match) {
+                          setEditServingSize(match[1]);
+                        }
+                      }}
+                      placeholder="Food name (serving size)"
+                      placeholderTextColor="#999"
+                    />
+                    <Ionicons name="create-outline" size={24} color="#36B37E" />
                   </View>
-                  <View style={styles.editInfoRow}>
-                    <Text style={styles.editLabel}>Protein:</Text>
-                    <Text style={styles.editValue}>{editingEntry.protein}g</Text>
-                  </View>
-                  <View style={styles.editInfoRow}>
-                    <Text style={styles.editLabel}>Carbs:</Text>
-                    <Text style={styles.editValue}>{editingEntry.carbs}g</Text>
-                  </View>
-                  <View style={styles.editInfoRow}>
-                    <Text style={styles.editLabel}>Fats:</Text>
-                    <Text style={styles.editValue}>{editingEntry.fats}g</Text>
-                  </View>
+                  <Text style={styles.editInstruction}>
+                    💡 Edit the serving size in parentheses, e.g., "Apple (200g)" or "Roti (2 pieces)"
+                  </Text>
                 </View>
                 
-                <Text style={styles.sectionLabel}>Update Serving Size:</Text>
-                <View style={styles.inputContainer}>
-                  <Ionicons name="scale-outline" size={20} color="#36B37E" />
-                  <TextInput
-                    style={styles.editInput}
-                    placeholder="New serving (e.g., '3 rotis', '100g', '2 cups')"
-                    value={editServingSize}
-                    onChangeText={setEditServingSize}
-                    placeholderTextColor="#999"
-                  />
+                {/* Current Nutrition Info */}
+                <View style={styles.nutritionInfoCard}>
+                  <Text style={styles.nutritionCardTitle}>Current Nutrition</Text>
+                  <View style={styles.nutritionRow}>
+                    <View style={styles.nutritionCol}>
+                      <Text style={styles.nutritionBigValue}>{editingEntry.calories}</Text>
+                      <Text style={styles.nutritionSmallLabel}>Calories</Text>
+                    </View>
+                    <View style={styles.nutritionCol}>
+                      <Text style={styles.nutritionBigValue}>{editingEntry.protein}g</Text>
+                      <Text style={styles.nutritionSmallLabel}>Protein</Text>
+                    </View>
+                    <View style={styles.nutritionCol}>
+                      <Text style={styles.nutritionBigValue}>{editingEntry.carbs}g</Text>
+                      <Text style={styles.nutritionSmallLabel}>Carbs</Text>
+                    </View>
+                    <View style={styles.nutritionCol}>
+                      <Text style={styles.nutritionBigValue}>{editingEntry.fats}g</Text>
+                      <Text style={styles.nutritionSmallLabel}>Fats</Text>
+                    </View>
+                  </View>
                 </View>
-                <Text style={styles.editHint}>
-                  ✏️ Enter new amount - Calories will be recalculated automatically
-                </Text>
                 
                 <TouchableOpacity
                   style={styles.saveButton}
