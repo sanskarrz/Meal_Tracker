@@ -471,6 +471,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
+  servingHint: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: -8,
+    marginBottom: 16,
+    paddingHorizontal: 4,
+    fontStyle: 'italic',
+  },
   textAreaContainer: {
     backgroundColor: 'white',
     borderRadius: 12,
