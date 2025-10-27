@@ -279,7 +279,17 @@ export default function ScanScreen() {
             
             {lastResult && (
               <View style={styles.resultContainer}>
-                <Text style={styles.resultFoodName}>{lastResult.food_name}</Text>
+                {/* Editable Food Name */}
+                <View style={styles.inputContainer}>
+                  <Ionicons name="restaurant-outline" size={20} color="#36B37E" />
+                  <TextInput
+                    style={styles.foodNameInput}
+                    value={lastResult.food_name}
+                    onChangeText={(text) => setLastResult({...lastResult, food_name: text})}
+                    placeholderTextColor="#999"
+                    placeholder="Food name"
+                  />
+                </View>
                 
                 <View style={styles.resultCalories}>
                   <Text style={styles.resultCaloriesValue}>{lastResult.calories}</Text>
@@ -301,16 +311,19 @@ export default function ScanScreen() {
                   </View>
                 </View>
                 
+                {/* Editable Serving Size */}
                 <View style={styles.inputContainer}>
                   <Ionicons name="scale-outline" size={20} color="#36B37E" />
                   <TextInput
                     style={styles.servingInput}
-                    placeholder="Serving size (e.g., '1 cup', '100g')"
+                    placeholder="Serving size (e.g., '2 rotis (60g each)', '45g')"
                     value={servingSize}
                     onChangeText={setServingSize}
                     placeholderTextColor="#999"
                   />
                 </View>
+                
+                <Text style={styles.editHint}>✏️ You can edit the food name and serving size above</Text>
                 
                 <TouchableOpacity
                   style={styles.addToLogButton}
