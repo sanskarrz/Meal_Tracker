@@ -524,57 +524,63 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </View>
             
-            {editingEntry && (
-              <View style={styles.editContainer}>
-                {/* Food Name - READ ONLY */}
-                <View style={styles.foodNameSection}>
-                  <Text style={styles.editSectionLabel}>Food Item</Text>
-                  <View style={styles.readOnlyBox}>
-                    <Ionicons name="restaurant-outline" size={20} color="#666" />
-                    <Text style={styles.readOnlyText}>{editingEntry.food_name}</Text>
-                  </View>
-                </View>
-                
-                {/* Current Nutrition Display */}
-                <View style={styles.nutritionInfoCard}>
-                  <Text style={styles.nutritionCardTitle}>Current Nutrition</Text>
-                  <View style={styles.nutritionRow}>
-                    <View style={styles.nutritionCol}>
-                      <Text style={styles.nutritionBigValue}>{editingEntry.calories}</Text>
-                      <Text style={styles.nutritionSmallLabel}>Calories</Text>
-                    </View>
-                    <View style={styles.nutritionCol}>
-                      <Text style={styles.nutritionBigValue}>{editingEntry.protein}g</Text>
-                      <Text style={styles.nutritionSmallLabel}>Protein</Text>
-                    </View>
-                    <View style={styles.nutritionCol}>
-                      <Text style={styles.nutritionBigValue}>{editingEntry.carbs}g</Text>
-                      <Text style={styles.nutritionSmallLabel}>Carbs</Text>
-                    </View>
-                    <View style={styles.nutritionCol}>
-                      <Text style={styles.nutritionBigValue}>{editingEntry.fats}g</Text>
-                      <Text style={styles.nutritionSmallLabel}>Fats</Text>
+            <ScrollView style={styles.modalScrollView} showsVerticalScrollIndicator={false}>
+              {editingEntry && (
+                <View style={styles.editContainer}>
+                  {/* Food Name with Current Serving - Updates as you type */}
+                  <View style={styles.foodNameSection}>
+                    <Text style={styles.editSectionLabel}>Food Item</Text>
+                    <View style={styles.readOnlyBox}>
+                      <Ionicons name="restaurant-outline" size={20} color="#666" />
+                      <Text style={styles.readOnlyText}>
+                        {editingEntry.food_name.split('(')[0].trim()} ({editServingSize})
+                      </Text>
                     </View>
                   </View>
-                </View>
-                
-                {/* Serving Size - EDITABLE ONLY */}
-                <View style={styles.servingSizeSection}>
-                  <Text style={styles.editSectionLabel}>Change Serving Size</Text>
-                  <View style={styles.largeEditBox}>
-                    <Ionicons name="scale-outline" size={24} color="#36B37E" />
-                    <TextInput
-                      style={styles.largeEditInput}
-                      value={editServingSize}
-                      onChangeText={setEditServingSize}
-                      placeholder="e.g., 200g, 2 rotis, 300ml"
-                      placeholderTextColor="#999"
-                    />
+                  
+                  {/* Current Nutrition Display */}
+                  <View style={styles.nutritionInfoCard}>
+                    <Text style={styles.nutritionCardTitle}>Current Nutrition</Text>
+                    <View style={styles.nutritionRow}>
+                      <View style={styles.nutritionCol}>
+                        <Text style={styles.nutritionBigValue}>{editingEntry.calories}</Text>
+                        <Text style={styles.nutritionSmallLabel}>Calories</Text>
+                      </View>
+                      <View style={styles.nutritionCol}>
+                        <Text style={styles.nutritionBigValue}>{editingEntry.protein}g</Text>
+                        <Text style={styles.nutritionSmallLabel}>Protein</Text>
+                      </View>
+                      <View style={styles.nutritionCol}>
+                        <Text style={styles.nutritionBigValue}>{editingEntry.carbs}g</Text>
+                        <Text style={styles.nutritionSmallLabel}>Carbs</Text>
+                      </View>
+                      <View style={styles.nutritionCol}>
+                        <Text style={styles.nutritionBigValue}>{editingEntry.fats}g</Text>
+                        <Text style={styles.nutritionSmallLabel}>Fats</Text>
+                      </View>
+                    </View>
                   </View>
-                  <Text style={styles.editInstruction}>
-                    💡 Enter new serving size - Calories will recalculate automatically
-                  </Text>
+                  
+                  {/* Serving Size - EDITABLE ONLY */}
+                  <View style={styles.servingSizeSection}>
+                    <Text style={styles.editSectionLabel}>Change Serving Size</Text>
+                    <View style={styles.largeEditBox}>
+                      <Ionicons name="scale-outline" size={24} color="#36B37E" />
+                      <TextInput
+                        style={styles.largeEditInput}
+                        value={editServingSize}
+                        onChangeText={setEditServingSize}
+                        placeholder="e.g., 200g, 2 rotis, 300ml"
+                        placeholderTextColor="#999"
+                      />
+                    </View>
+                    <Text style={styles.editInstruction}>
+                      💡 Type above - Food name will update automatically
+                    </Text>
+                  </View>
                 </View>
+              )}
+            </ScrollView>
                 
                 <TouchableOpacity
                   style={styles.saveButton}
