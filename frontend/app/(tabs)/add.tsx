@@ -246,12 +246,15 @@ export default function AddScreen() {
                 <Ionicons name="scale-outline" size={20} color="#36B37E" />
                 <TextInput
                   style={styles.input}
-                  placeholder="Serving size (e.g., '1 cup', '100g', '1 medium')"
+                  placeholder="Serving size (e.g., '45g', '2 rotis (120g)', '1 cup (150ml)')"
                   value={servingSize}
                   onChangeText={setServingSize}
                   placeholderTextColor="#999"
                 />
               </View>
+              <Text style={styles.servingHint}>
+                💡 Be specific: Include weight (grams/ml), pieces, or measurements
+              </Text>
 
               <TouchableOpacity
                 style={[styles.submitButton, loading && styles.submitButtonDisabled]}
