@@ -143,27 +143,93 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
         chat = LlmChat(
             api_key=EMERGENT_LLM_KEY,
             session_id=f"food_analysis_{datetime.now().timestamp()}",
-            system_message="You are a nutrition expert specializing in Indian and South Asian cuisine. Analyze food items accurately and provide detailed nutritional information in JSON format. If you cannot confidently identify the food item in an image, set confidence to 'low' and food_name to 'Unknown Food'. Be accurate with portion sizes common in India."
+            system_message="""You are a nutrition expert specializing in Indian and South Asian cuisine. 
+            Provide SPECIFIC serving sizes using MEASURABLE units:
+            - For packaged foods: ALWAYS include brand AND weight (e.g., "Cadbury Dairy Milk 45g", "Parle-G 50g")
+            - For home-cooked foods: Use specific Indian units (e.g., "2 medium rotis (60g each)", "1 katori dal (150ml)")
+            - For fruits/vegetables: Use pieces with weight (e.g., "1 medium banana (120g)", "2 medium potatoes (200g)")
+            - NEVER use vague terms like "1 serving" - always quantify
+            
+            If you cannot confidently identify the food, set confidence to 'low' and food_name to 'Unknown Food'.
+            Be VERY accurate with portion sizes and calorie counts for Indian market."""
         ).with_model("openai", "gpt-4o")
         
         # Prepare prompt
         if image_base64 and text_query:
-            prompt = f"{text_query}. For Indian foods, use common Indian serving sizes (e.g., '1 roti', '1 katori', '1 plate'). Return ONLY a valid JSON object with: food_name (string), calories (number), protein (number in grams), carbs (number in grams), fats (number in grams), serving_size (string), confidence (string: high/medium/low). Set confidence to 'low' if you cannot clearly identify the food."
-            # Create image content
+            prompt = f"""{text_query}. 
+            CRITICAL REQUIREMENTS:
+            1. If it's packaged food (chocolates, biscuits, chips): MUST include brand name and exact weight/variant (e.g., "Cadbury Dairy Milk 45g")
+            2. For home-cooked food: Use specific measurements (e.g., "2 medium rotis (60g each)" NOT "1 serving")
+            3. For branded items mentioned without weight, ask for clarification by returning multiple common variants
+            
+            Return ONLY valid JSON: 
+            {{
+                "food_name": "specific name with brand and weight if packaged",
+                "calories": number,
+                "protein": number in grams,
+                "carbs": number in grams,
+                "fats": number in grams,
+                "serving_size": "specific measurement with weight/volume/pieces",
+                "confidence": "high/medium/low"
+            }}
+            """
             image_content = ImageContent(image_base64=image_base64)
-            message = UserMessage(
-                text=prompt,
-                file_contents=[image_content]
-            )
+            message = UserMessage(text=prompt, file_contents=[image_content])
+            
         elif image_base64:
-            prompt = "Carefully identify this food item and provide nutritional information. Consider Indian and South Asian dishes. Estimate the serving size shown in the image using appropriate units (for Indian foods: roti, katori, plate, cup, bowl, etc.). Return ONLY a valid JSON object with: food_name (string - specific name), calories (number), protein (number in grams), carbs (number in grams), fats (number in grams), serving_size (string), confidence (string: high/medium/low). IMPORTANT: If you cannot clearly see or identify the food, or if the image quality is poor, set confidence to 'low' and food_name to 'Unknown Food'."
+            prompt = """Carefully identify this food item and provide nutritional information.
+            
+            CRITICAL REQUIREMENTS:
+            1. Look for brand names, packaging, labels in the image
+            2. If packaged food: MUST include brand and weight (e.g., "Cadbury Dairy Milk 45g", "Lays Classic 50g")
+            3. If home-cooked: Estimate portion size with specific units (e.g., "2 medium rotis (60g each)", "1 katori dal (150ml)")
+            4. If unclear or poor quality: set confidence to 'low' and food_name to 'Unknown Food'
+            
+            Return ONLY valid JSON:
+            {{
+                "food_name": "specific name - MUST include brand and weight if visible",
+                "calories": number,
+                "protein": number in grams,
+                "carbs": number in grams,
+                "fats": number in grams,
+                "serving_size": "specific measurement (grams, ml, pieces with weight)",
+                "confidence": "high/medium/low"
+            }}
+            
+            Example good responses:
+            - "Cadbury Dairy Milk 45g" with serving_size "1 bar (45g)"
+            - "Parle-G Biscuits" with serving_size "4 biscuits (25g)"
+            - "Chicken Biryani" with serving_size "1 plate (300g)"
+            """
             image_content = ImageContent(image_base64=image_base64)
-            message = UserMessage(
-                text=prompt,
-                file_contents=[image_content]
-            )
+            message = UserMessage(text=prompt, file_contents=[image_content])
+            
         else:
-            prompt = f"Provide accurate nutritional information for: {text_query}. Consider Indian market context and common serving sizes. For Indian foods, use units like '1 roti', '1 katori', '1 plate', '1 bowl'. Return ONLY a valid JSON object with: food_name (string), calories (number), protein (number in grams), carbs (number in grams), fats (number in grams), serving_size (string), confidence (string: high/medium/low)."
+            prompt = f"""Provide accurate nutritional information for: {text_query}
+            
+            CRITICAL REQUIREMENTS:
+            1. If it's a branded item (Cadbury, Lays, Parle, etc.) WITHOUT weight mentioned:
+               - Return the MOST COMMON variant in Indian market
+               - OR ask for weight by including multiple options in food_name
+               Example: If query is "Cadbury", return "Cadbury Dairy Milk 45g (most common)" 
+            
+            2. For home-cooked foods: Use specific Indian measurements
+               - "2 medium rotis (60g each)" NOT "1 serving of roti"
+               - "1 katori dal (150ml)" NOT "1 serving of dal"
+            
+            3. NEVER use vague "1 serving" - always give specific weight/volume/pieces
+            
+            Return ONLY valid JSON:
+            {{
+                "food_name": "specific name with brand and weight/variant",
+                "calories": number,
+                "protein": number in grams,
+                "carbs": number in grams,
+                "fats": number in grams,
+                "serving_size": "specific measurement (grams, ml, pieces)",
+                "confidence": "high/medium/low"
+            }}
+            """
             message = UserMessage(text=prompt)
         
         # Get response
@@ -185,19 +251,19 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
                 "protein": 10,
                 "carbs": 20,
                 "fats": 8,
-                "serving_size": "1 serving",
+                "serving_size": "1 serving (weight not specified)",
                 "confidence": "low"
             }
         
-        # Ensure serving_size is present
-        if "serving_size" not in nutrition_data:
-            nutrition_data["serving_size"] = "1 serving"
+        # Ensure serving_size is present and specific
+        if "serving_size" not in nutrition_data or nutrition_data["serving_size"] == "1 serving":
+            nutrition_data["serving_size"] = "1 serving (weight not specified)"
         
         # Reject low confidence results for image analysis
         if image_base64 and nutrition_data.get("confidence") == "low":
             raise HTTPException(
                 status_code=400, 
-                detail="Unable to confidently identify the food item. Please try again with a clearer image or enter the food name manually."
+                detail="Unable to confidently identify the food item. Please try again with a clearer image or enter the food name manually with specific details (e.g., 'Cadbury 45g', '2 rotis')."
             )
         
         return nutrition_data
