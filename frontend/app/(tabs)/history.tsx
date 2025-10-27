@@ -558,6 +558,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
+  editHint: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: -8,
+    marginBottom: 16,
+    paddingHorizontal: 4,
+    fontStyle: 'italic',
+  },
   saveButton: {
     borderRadius: 12,
     overflow: 'hidden',
