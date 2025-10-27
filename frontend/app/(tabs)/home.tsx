@@ -526,31 +526,16 @@ export default function HomeScreen() {
             
             {editingEntry && (
               <View style={styles.editContainer}>
-                {/* Editable Food Name and Serving Size in One Line */}
-                <View style={styles.editHeaderSection}>
-                  <Text style={styles.editSectionLabel}>Food & Serving</Text>
-                  <View style={styles.largeEditBox}>
-                    <TextInput
-                      style={styles.largeEditInput}
-                      value={`${editingEntry.food_name} (${editServingSize})`}
-                      onChangeText={(text) => {
-                        // Extract serving size from the text
-                        const match = text.match(/\(([^)]+)\)$/);
-                        if (match) {
-                          setEditServingSize(match[1]);
-                        }
-                      }}
-                      placeholder="Food name (serving size)"
-                      placeholderTextColor="#999"
-                    />
-                    <Ionicons name="create-outline" size={24} color="#36B37E" />
+                {/* Food Name - READ ONLY */}
+                <View style={styles.foodNameSection}>
+                  <Text style={styles.editSectionLabel}>Food Item</Text>
+                  <View style={styles.readOnlyBox}>
+                    <Ionicons name="restaurant-outline" size={20} color="#666" />
+                    <Text style={styles.readOnlyText}>{editingEntry.food_name}</Text>
                   </View>
-                  <Text style={styles.editInstruction}>
-                    💡 Edit the serving size in parentheses, e.g., "Apple (200g)" or "Roti (2 pieces)"
-                  </Text>
                 </View>
                 
-                {/* Current Nutrition Info */}
+                {/* Current Nutrition Display */}
                 <View style={styles.nutritionInfoCard}>
                   <Text style={styles.nutritionCardTitle}>Current Nutrition</Text>
                   <View style={styles.nutritionRow}>
@@ -571,6 +556,24 @@ export default function HomeScreen() {
                       <Text style={styles.nutritionSmallLabel}>Fats</Text>
                     </View>
                   </View>
+                </View>
+                
+                {/* Serving Size - EDITABLE ONLY */}
+                <View style={styles.servingSizeSection}>
+                  <Text style={styles.editSectionLabel}>Change Serving Size</Text>
+                  <View style={styles.largeEditBox}>
+                    <Ionicons name="scale-outline" size={24} color="#36B37E" />
+                    <TextInput
+                      style={styles.largeEditInput}
+                      value={editServingSize}
+                      onChangeText={setEditServingSize}
+                      placeholder="e.g., 200g, 2 rotis, 300ml"
+                      placeholderTextColor="#999"
+                    />
+                  </View>
+                  <Text style={styles.editInstruction}>
+                    💡 Enter new serving size - Calories will recalculate automatically
+                  </Text>
                 </View>
                 
                 <TouchableOpacity
