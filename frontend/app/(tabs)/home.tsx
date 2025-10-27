@@ -1064,6 +1064,67 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 8,
   },
+  editHeaderSection: {
+    marginBottom: 20,
+  },
+  editSectionLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 12,
+  },
+  largeEditBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderWidth: 2,
+    borderColor: '#36B37E',
+  },
+  largeEditInput: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+  },
+  editInstruction: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 8,
+    fontStyle: 'italic',
+  },
+  nutritionInfoCard: {
+    backgroundColor: '#E8F5E9',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+  },
+  nutritionCardTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  nutritionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  nutritionCol: {
+    alignItems: 'center',
+  },
+  nutritionBigValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#36B37E',
+  },
+  nutritionSmallLabel: {
+    fontSize: 11,
+    color: '#666',
+    marginTop: 4,
+  },
   saveButton: {
     borderRadius: 12,
     overflow: 'hidden',
