@@ -584,10 +584,23 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 16,
   },
+  foodNameInput: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+  },
   servingInput: {
     flex: 1,
     fontSize: 16,
     color: '#333',
+  },
+  editHint: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 16,
+    fontStyle: 'italic',
   },
   addToLogButton: {
     width: '100%',
