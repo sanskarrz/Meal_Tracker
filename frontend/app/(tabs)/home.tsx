@@ -1070,6 +1070,28 @@ const styles = StyleSheet.create({
   editHeaderSection: {
     marginBottom: 20,
   },
+  foodNameSection: {
+    marginBottom: 20,
+  },
+  servingSizeSection: {
+    marginBottom: 20,
+  },
+  readOnlyBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F9F9F9',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    gap: 12,
+  },
+  readOnlyText: {
+    flex: 1,
+    fontSize: 16,
+    color: '#666',
+  },
   editSectionLabel: {
     fontSize: 16,
     fontWeight: 'bold',
