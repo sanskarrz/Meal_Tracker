@@ -262,7 +262,7 @@ export default function HistoryScreen() {
                 
                 <View style={styles.editInfoCard}>
                   <View style={styles.editInfoRow}>
-                    <Text style={styles.editLabel}>Calories:</Text>
+                    <Text style={styles.editLabel}>Current Calories:</Text>
                     <Text style={styles.editValue}>{editingEntry.calories} cal</Text>
                   </View>
                   <View style={styles.editInfoRow}>
@@ -279,18 +279,19 @@ export default function HistoryScreen() {
                   </View>
                 </View>
                 
+                <Text style={styles.sectionLabel}>Update Serving Size:</Text>
                 <View style={styles.inputContainer}>
                   <Ionicons name="scale-outline" size={20} color="#36B37E" />
                   <TextInput
                     style={styles.editInput}
-                    placeholder="Serving size (e.g., '45g', '2 rotis (120g)', '1 cup (150ml)')"
+                    placeholder="New serving (e.g., '3 rotis', '100g', '2 cups')"
                     value={editServingSize}
                     onChangeText={setEditServingSize}
                     placeholderTextColor="#999"
                   />
                 </View>
                 <Text style={styles.editHint}>
-                  💡 Be specific: Use grams, ml, pieces with weight
+                  ✏️ Enter new amount - Calories will be recalculated automatically
                 </Text>
                 
                 <TouchableOpacity
