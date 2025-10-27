@@ -1160,9 +1160,11 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   saveButton: {
-    borderRadius: 12,
+    marginHorizontal: 24,
+    marginTop: 16,
+    marginBottom: 24,
+    borderRadius: 16,
     overflow: 'hidden',
-    marginTop: 8,
   },
   saveButtonGradient: {
     flexDirection: 'row',
