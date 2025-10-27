@@ -1046,6 +1046,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     fontStyle: 'italic',
   },
+  sectionLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginTop: 16,
+    marginBottom: 8,
+  },
   saveButton: {
     borderRadius: 12,
     overflow: 'hidden',
