@@ -279,65 +279,82 @@ export default function ScanScreen() {
             
             {lastResult && (
               <View style={styles.resultContainer}>
-                {/* Editable Food Name */}
-                <View style={styles.inputContainer}>
-                  <Ionicons name="restaurant-outline" size={20} color="#36B37E" />
+                {/* Section 1: Food Name - Large and Clear */}
+                <Text style={styles.confirmLabel}>Food Name</Text>
+                <View style={styles.largeInputBox}>
                   <TextInput
-                    style={styles.foodNameInput}
+                    style={styles.largeInput}
                     value={lastResult.food_name}
                     onChangeText={(text) => setLastResult({...lastResult, food_name: text})}
                     placeholderTextColor="#999"
-                    placeholder="Food name"
+                    placeholder="Enter food name"
                   />
+                  <Ionicons name="create-outline" size={24} color="#36B37E" />
                 </View>
                 
-                <View style={styles.resultCalories}>
-                  <Text style={styles.resultCaloriesValue}>{lastResult.calories}</Text>
-                  <Text style={styles.resultCaloriesLabel}>calories</Text>
+                {/* Section 2: Nutrition Info - Big Display */}
+                <View style={styles.nutritionDisplayCard}>
+                  <View style={styles.caloriesBig}>
+                    <Text style={styles.caloriesBigValue}>{lastResult.calories}</Text>
+                    <Text style={styles.caloriesBigLabel}>Calories</Text>
+                  </View>
+                  <View style={styles.macrosRow}>
+                    <View style={styles.macroBox}>
+                      <Text style={styles.macroBoxValue}>{lastResult.protein}g</Text>
+                      <Text style={styles.macroBoxLabel}>Protein</Text>
+                    </View>
+                    <View style={styles.macroBox}>
+                      <Text style={styles.macroBoxValue}>{lastResult.carbs}g</Text>
+                      <Text style={styles.macroBoxLabel}>Carbs</Text>
+                    </View>
+                    <View style={styles.macroBox}>
+                      <Text style={styles.macroBoxValue}>{lastResult.fats}g</Text>
+                      <Text style={styles.macroBoxLabel}>Fats</Text>
+                    </View>
+                  </View>
                 </View>
                 
-                <View style={styles.resultMacros}>
-                  <View style={styles.resultMacroItem}>
-                    <Text style={styles.resultMacroValue}>{lastResult.protein}g</Text>
-                    <Text style={styles.resultMacroLabel}>Protein</Text>
-                  </View>
-                  <View style={styles.resultMacroItem}>
-                    <Text style={styles.resultMacroValue}>{lastResult.carbs}g</Text>
-                    <Text style={styles.resultMacroLabel}>Carbs</Text>
-                  </View>
-                  <View style={styles.resultMacroItem}>
-                    <Text style={styles.resultMacroValue}>{lastResult.fats}g</Text>
-                    <Text style={styles.resultMacroLabel}>Fats</Text>
-                  </View>
-                </View>
-                
-                {/* Editable Serving Size */}
-                <View style={styles.inputContainer}>
-                  <Ionicons name="scale-outline" size={20} color="#36B37E" />
+                {/* Section 3: Serving Size - Large and Clear */}
+                <Text style={styles.confirmLabel}>Serving Size</Text>
+                <View style={styles.largeInputBox}>
                   <TextInput
-                    style={styles.servingInput}
-                    placeholder="Serving size (e.g., '2 rotis (60g each)', '45g')"
+                    style={styles.largeInput}
+                    placeholder="e.g., '2 rotis', '45g', '1 cup'"
                     value={servingSize}
                     onChangeText={setServingSize}
                     placeholderTextColor="#999"
                   />
+                  <Ionicons name="create-outline" size={24} color="#36B37E" />
                 </View>
                 
-                <Text style={styles.editHint}>✏️ You can edit the food name and serving size above</Text>
+                <Text style={styles.confirmHint}>
+                  ✏️ Edit the details above before adding to your log
+                </Text>
                 
+                {/* Large Confirm Button */}
                 <TouchableOpacity
-                  style={styles.addToLogButton}
+                  style={styles.confirmButton}
                   onPress={addToLog}
                   disabled={isAnalyzing}
                 >
                   <LinearGradient
                     colors={['#36B37E', '#2A9D68']}
-                    style={styles.addToLogGradient}
+                    style={styles.confirmGradient}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                   >
                     {isAnalyzing ? (
-                      <ActivityIndicator color="white" />
+                      <ActivityIndicator color="white" size="large" />
+                    ) : (
+                      <>
+                        <Ionicons name="checkmark-circle" size={28} color="white" />
+                        <Text style={styles.confirmButtonText}>Confirm & Add to Log</Text>
+                      </>
+                    )}
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            )}
                     ) : (
                       <>
                         <Ionicons name="add-circle" size={20} color="white" />
