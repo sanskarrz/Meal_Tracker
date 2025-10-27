@@ -355,16 +355,6 @@ export default function ScanScreen() {
                 </TouchableOpacity>
               </View>
             )}
-                    ) : (
-                      <>
-                        <Ionicons name="add-circle" size={20} color="white" />
-                        <Text style={styles.addToLogText}>Add to Daily Log</Text>
-                      </>
-                    )}
-                  </LinearGradient>
-                </TouchableOpacity>
-              </View>
-            )}
           </Animated.View>
         </View>
       </Modal>
