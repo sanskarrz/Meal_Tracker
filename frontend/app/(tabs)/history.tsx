@@ -283,12 +283,15 @@ export default function HistoryScreen() {
                   <Ionicons name="scale-outline" size={20} color="#36B37E" />
                   <TextInput
                     style={styles.editInput}
-                    placeholder="Serving size (e.g., '1 cup', '100g')"
+                    placeholder="Serving size (e.g., '45g', '2 rotis (120g)', '1 cup (150ml)')"
                     value={editServingSize}
                     onChangeText={setEditServingSize}
                     placeholderTextColor="#999"
                   />
                 </View>
+                <Text style={styles.editHint}>
+                  💡 Be specific: Use grams, ml, pieces with weight
+                </Text>
                 
                 <TouchableOpacity
                   style={styles.saveButton}
