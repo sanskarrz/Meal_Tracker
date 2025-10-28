@@ -531,8 +531,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    padding: 24,
-    maxHeight: '70%',
+    paddingTop: 24,
+    paddingHorizontal: 24,
+    maxHeight: '80%',
+  },
+  modalScroll: {
+    maxHeight: '100%',
   },
   modalHeader: {
     flexDirection: 'row',
