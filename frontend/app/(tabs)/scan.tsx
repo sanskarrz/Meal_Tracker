@@ -150,7 +150,7 @@ export default function ScanScreen() {
   };
 
   const addToLog = async () => {
-    if (!lastResult) return;
+    if (!lastResult || !lastResult.id) return;
     
     if (!servingSize.trim()) {
       Alert.alert('Validation Error', 'Please enter a serving size');
@@ -159,10 +159,10 @@ export default function ScanScreen() {
     
     setIsAnalyzing(true);
     try {
-      await axios.post(
-        `${API_URL}/api/food/manual`,
+      // Update the already-saved entry with the confirmed serving size
+      await axios.put(
+        `${API_URL}/api/food/${lastResult.id}`,
         { 
-          food_name: lastResult.food_name,
           serving_size: servingSize
         },
         { 
@@ -176,6 +176,9 @@ export default function ScanScreen() {
       setLastResult(null);
       setCapturedImage(null);
       setServingSize('');
+      
+      // Navigate to home to see the entry
+      router.push('/(tabs)/home');
     } catch (error: any) {
       console.error('Add to log error:', error);
       const errorMsg = error.response?.status === 401 
