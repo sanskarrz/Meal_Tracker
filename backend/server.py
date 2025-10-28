@@ -12,7 +12,6 @@ import os
 from dotenv import load_dotenv
 import base64
 import asyncio
-from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
 
 load_dotenv()
 
