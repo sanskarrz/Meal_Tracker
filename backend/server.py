@@ -570,20 +570,34 @@ async def update_food_entry(entry_id: str, request: dict, current_user = Depends
         # Update serving size if provided
         new_serving_size = request.get("serving_size")
         if new_serving_size:
-            # Get base food name (remove old serving size in parentheses if exists)
+            # Get base food type (remove quantities and old serving)
             old_food_name = entry.get("food_name", "Unknown Food")
-            base_food_name = old_food_name.split('(')[0].strip()
             
-            # Create new food name with new serving size
-            new_food_name = f"{base_food_name} ({new_serving_size})"
+            # Extract just the food type (e.g., "roti", "dal", "apple") from old name
+            # Remove common quantity words and parentheses content
+            import re
+            base_food_type = re.sub(r'\(.*?\)', '', old_food_name)  # Remove parentheses
+            base_food_type = re.sub(r'^\d+\s+', '', base_food_type)  # Remove leading numbers
+            base_food_type = re.sub(r'\s*(medium|small|large|big)\s*', ' ', base_food_type, flags=re.IGNORECASE)  # Remove size words
+            base_food_type = base_food_type.strip()
             
-            # Recalculate nutrition based on the new serving size
-            prompt = f"Recalculate nutrition for {base_food_name}. New serving is {new_serving_size}. Provide accurate values for Indian market."
+            # The new serving size entered by user IS the new food name
+            # Only append base food type if it's not already in the serving size
+            if base_food_type.lower() in new_serving_size.lower():
+                # User already included food type, use as is
+                new_food_name = new_serving_size
+            else:
+                # User only entered quantity/size, append food type
+                # e.g., "200g" + "dal" = "200g dal"
+                new_food_name = f"{new_serving_size} {base_food_type}".strip()
+            
+            # Recalculate nutrition based on the new serving
+            prompt = f"Provide accurate nutrition for {new_food_name} for Indian market."
             nutrition_data = await analyze_food_with_gemini(text_query=prompt)
             
             # Update the entry with new nutrition values AND new food name
             update_data = {
-                "food_name": new_food_name,  # UPDATE FOOD NAME TOO!
+                "food_name": new_food_name,  # Smart food name based on serving
                 "serving_size": new_serving_size,
                 "calories": nutrition_data.get("calories", entry.get("calories", 0)),
                 "protein": nutrition_data.get("protein", entry.get("protein", 0)),
