@@ -173,7 +173,8 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
                 "confidence": "high/medium/low"
             }}
             """
-            image_content = ImageContent(image_base64=image_base64)
+            # Add data URI prefix for OpenAI Vision API
+            image_content = ImageContent(image_base64=f"data:image/jpeg;base64,{image_base64}")
             message = UserMessage(text=prompt, file_contents=[image_content])
             
         elif image_base64:
