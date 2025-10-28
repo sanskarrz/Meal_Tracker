@@ -137,31 +137,29 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     return user
 
 async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_query: Optional[str] = None) -> Dict[str, Any]:
-    """Analyze food using OpenAI GPT-5 Vision API - optimized for Indian food items"""
+    """Analyze food using OpenAI Vision API directly - optimized for Indian food items"""
     try:
-        # Create chat instance with OpenAI GPT-5 (latest model with best vision)
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"food_analysis_{datetime.now().timestamp()}",
-            system_message="""You are a nutrition expert specializing in Indian and South Asian cuisine. 
-            Provide SPECIFIC serving sizes using MEASURABLE units:
-            - For packaged foods: Try to identify brand AND weight (e.g., "Kellogg's Corn Flakes 100g", "Cadbury 45g")
-            - For home-cooked foods: Use specific Indian units (e.g., "2 medium rotis (60g each)", "1 katori dal (150ml)")
-            - For fruits/vegetables: Use pieces with weight (e.g., "1 medium banana (120g)", "2 medium potatoes (200g)")
-            - NEVER use vague terms like "1 serving" - always quantify
-            
-            Always provide your best estimate even if image quality is not perfect.
-            Be VERY accurate with portion sizes and calorie counts for Indian market."""
-        ).with_model("openai", "gpt-4o")  # GPT-4o is the latest available vision model
+        # Use OpenAI SDK directly instead of emergentintegrations
+        from openai import AsyncOpenAI
         
-        # Prepare prompt
+        client = AsyncOpenAI(api_key=EMERGENT_LLM_KEY)
+        
+        system_message = """You are a nutrition expert specializing in Indian and South Asian cuisine. 
+        Provide SPECIFIC serving sizes using MEASURABLE units:
+        - For packaged foods: Try to identify brand AND weight (e.g., "Kellogg's Corn Flakes 100g", "Cadbury 45g")
+        - For home-cooked foods: Use specific Indian units (e.g., "2 medium rotis (60g each)", "1 katori dal (150ml)")
+        - For fruits/vegetables: Use pieces with weight (e.g., "1 medium banana (120g)", "2 medium potatoes (200g)")
+        - NEVER use vague terms like "1 serving" - always quantify
+        
+        Always provide your best estimate even if image quality is not perfect.
+        Be VERY accurate with portion sizes and calorie counts for Indian market."""
+        
+        # Prepare messages based on input type
+        messages = [{"role": "system", "content": system_message}]
+        
         if image_base64 and text_query:
+            # Image + text query
             prompt = f"""{text_query}. 
-            CRITICAL REQUIREMENTS:
-            1. If it's packaged food (chocolates, biscuits, chips): MUST include brand name and exact weight/variant (e.g., "Cadbury Dairy Milk 45g")
-            2. For home-cooked food: Use specific measurements (e.g., "2 medium rotis (60g each)" NOT "1 serving")
-            3. For branded items mentioned without weight, ask for clarification by returning multiple common variants
-            
             Return ONLY valid JSON: 
             {{
                 "food_name": "specific name with brand and weight if packaged",
@@ -173,19 +171,24 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
                 "confidence": "high/medium/low"
             }}
             """
-            # emergentintegrations expects RAW base64, NOT data URI format
-            image_content = ImageContent(image_base64=image_base64)
-            message = UserMessage(text=prompt, file_contents=[image_content])
+            messages.append({
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{image_base64}"
+                        }
+                    }
+                ]
+            })
             
         elif image_base64:
+            # Image only
             prompt = """Carefully identify this food item and provide nutritional information.
             
-            CRITICAL REQUIREMENTS:
-            1. Look for brand names, packaging, labels in the image
-            2. If packaged food: Try to identify brand and weight (e.g., "Kellogg's Corn Flakes 100g", "Lays Classic 50g")
-            3. If home-cooked: Estimate portion size with specific units (e.g., "2 medium rotis (60g each)", "1 katori dal (150ml)")
-            4. Even if you're not 100% certain, provide your best guess with the food type and estimated portion
-            5. Only set confidence to 'low' if you truly cannot tell what type of food it is
+            Provide your best guess with the food type and estimated portion.
             
             Return ONLY valid JSON:
             {{
@@ -197,31 +200,23 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
                 "serving_size": "specific measurement (grams, ml, pieces with weight)",
                 "confidence": "high/medium/low"
             }}
-            
-            Example good responses:
-            - "Kellogg's Corn Flakes (1 bowl - 50g)" with confidence "medium"
-            - "Corn Flakes (1 bowl - 50g)" with confidence "medium" (if brand not visible)
-            - "Parle-G Biscuits" with serving_size "4 biscuits (25g)"
-            - "Chicken Biryani" with serving_size "1 plate (300g)"
             """
-            # emergentintegrations expects RAW base64, NOT data URI format
-            image_content = ImageContent(image_base64=image_base64)
-            message = UserMessage(text=prompt, file_contents=[image_content])
+            messages.append({
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{image_base64}"
+                        }
+                    }
+                ]
+            })
             
         else:
+            # Text only
             prompt = f"""Provide accurate nutritional information for: {text_query}
-            
-            CRITICAL REQUIREMENTS:
-            1. If it's a branded item (Cadbury, Lays, Parle, etc.) WITHOUT weight mentioned:
-               - Return the MOST COMMON variant in Indian market
-               - OR ask for weight by including multiple options in food_name
-               Example: If query is "Cadbury", return "Cadbury Dairy Milk 45g (most common)" 
-            
-            2. For home-cooked foods: Use specific Indian measurements
-               - "2 medium rotis (60g each)" NOT "1 serving of roti"
-               - "1 katori dal (150ml)" NOT "1 serving of dal"
-            
-            3. NEVER use vague "1 serving" - always give specific weight/volume/pieces
             
             Return ONLY valid JSON:
             {{
@@ -234,23 +229,30 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
                 "confidence": "high/medium/low"
             }}
             """
-            message = UserMessage(text=prompt)
+            messages.append({"role": "user", "content": prompt})
         
-        # Get response
-        response = await chat.send_message(message)
+        # Call OpenAI API directly
+        response = await client.chat.completions.create(
+            model="gpt-4o",
+            messages=messages,
+            max_tokens=500,
+            temperature=0.7
+        )
         
         # Parse JSON response
         import json
         import re
         
-        # Try to extract JSON from response - handle both single object and nested
-        json_match = re.search(r'\{(?:[^{}]|\{[^{}]*\})*\}', response)
+        response_text = response.choices[0].message.content
+        
+        # Try to extract JSON from response
+        json_match = re.search(r'\{(?:[^{}]|\{[^{}]*\})*\}', response_text)
         if json_match:
             nutrition_data = json.loads(json_match.group())
         else:
             # Fallback parsing if no JSON found
             nutrition_data = {
-                "food_name": "Unknown Food",
+                "food_name": "Unknown Food (estimated)",
                 "calories": 200,
                 "protein": 10,
                 "carbs": 20,
@@ -263,13 +265,19 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
         if "serving_size" not in nutrition_data or nutrition_data["serving_size"] == "1 serving":
             nutrition_data["serving_size"] = "1 serving (weight not specified)"
         
-        # CHANGED: Don't reject low confidence - show result and let user edit
-        # Users can correct the food name and serving size in the confirmation screen
+        # Add (estimated) tag for low confidence
         if image_base64 and nutrition_data.get("confidence") == "low":
-            # Add a note that this is a guess
             nutrition_data["food_name"] = f"{nutrition_data.get('food_name', 'Unknown Food')} (estimated)"
         
         return nutrition_data
+        
+    except Exception as e:
+        print(f"Error in OpenAI analysis: {str(e)}")
+        # Return error response
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to analyze food item: {str(e)}"
+        )
     except HTTPException:
         raise
     except Exception as e:
