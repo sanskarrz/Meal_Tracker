@@ -48,6 +48,7 @@ security = HTTPBearer()
 
 # LLM Configuration
 EMERGENT_LLM_KEY = os.getenv("EMERGENT_LLM_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Pydantic Models
 class UserRegister(BaseModel):
