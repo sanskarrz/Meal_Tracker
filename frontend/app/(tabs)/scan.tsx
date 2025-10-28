@@ -10,6 +10,7 @@ import {
   Animated,
   TextInput,
   Modal,
+  ScrollView,
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
