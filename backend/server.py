@@ -142,29 +142,66 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
         # Use OpenAI SDK directly with official API key
         from openai import AsyncOpenAI
         import re
+        from PIL import Image
+        import io
         
         client = AsyncOpenAI(api_key=OPENAI_API_KEY)
         
-        # Sanitize base64 if provided
+        # Sanitize and validate base64 if provided
         if image_base64:
+            print(f"📸 Received image base64. Original length: {len(image_base64)}")
+            
+            # Remove any data URI prefix if present
+            if ',' in image_base64 and 'base64' in image_base64:
+                image_base64 = image_base64.split(',')[1]
+                print(f"   Removed data URI prefix. New length: {len(image_base64)}")
+            
             # Remove any whitespace, newlines, and invalid characters
-            image_base64 = re.sub(r'[^A-Za-z0-9+/=]', '', image_base64)
+            cleaned_base64 = re.sub(r'[^A-Za-z0-9+/=]', '', image_base64)
+            print(f"   After cleaning: {len(cleaned_base64)} chars")
             
             # Ensure proper base64 padding
-            missing_padding = len(image_base64) % 4
+            missing_padding = len(cleaned_base64) % 4
             if missing_padding:
-                image_base64 += '=' * (4 - missing_padding)
+                cleaned_base64 += '=' * (4 - missing_padding)
+                print(f"   Added {4 - missing_padding} padding characters")
             
-            # Validate base64 by trying to decode it
+            # Validate base64 by trying to decode it and verify it's a valid image
             try:
-                base64.b64decode(image_base64)
-                print(f"✅ Base64 validation successful. Length: {len(image_base64)}")
+                image_bytes = base64.b64decode(cleaned_base64)
+                print(f"✅ Base64 decoded successfully. Image size: {len(image_bytes)} bytes")
+                
+                # Try to open the image with PIL to verify it's valid
+                try:
+                    img = Image.open(io.BytesIO(image_bytes))
+                    print(f"✅ Valid image detected: {img.format} {img.size} {img.mode}")
+                    
+                    # Convert to JPEG if not already (OpenAI prefers JPEG)
+                    if img.format != 'JPEG':
+                        print(f"   Converting {img.format} to JPEG...")
+                        buffer = io.BytesIO()
+                        if img.mode in ('RGBA', 'LA', 'P'):
+                            img = img.convert('RGB')
+                        img.save(buffer, format='JPEG', quality=85)
+                        image_bytes = buffer.getvalue()
+                        cleaned_base64 = base64.b64encode(image_bytes).decode('utf-8')
+                        print(f"   Converted to JPEG. New size: {len(image_bytes)} bytes")
+                except Exception as img_error:
+                    print(f"❌ Invalid image data: {str(img_error)}")
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"Invalid image format. Please try capturing the image again."
+                    )
+                    
             except Exception as e:
-                print(f"❌ Base64 validation failed: {str(e)}")
+                print(f"❌ Base64 decode failed: {str(e)}")
                 raise HTTPException(
                     status_code=400,
                     detail=f"Invalid base64 image data. Please try capturing the image again."
                 )
+            
+            # Use the cleaned base64
+            image_base64 = cleaned_base64
         
         system_message = """You are a nutrition expert specializing in Indian and South Asian cuisine. 
         Provide SPECIFIC serving sizes using MEASURABLE units:
