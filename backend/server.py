@@ -152,7 +152,7 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
             
             Always provide your best estimate even if image quality is not perfect.
             Be VERY accurate with portion sizes and calorie counts for Indian market."""
-        ).with_model("openai", "gpt-5")  # Using GPT-5 - best vision model
+        ).with_model("openai", "gpt-4o")  # GPT-4o is the latest available vision model
         
         # Prepare prompt
         if image_base64 and text_query:
