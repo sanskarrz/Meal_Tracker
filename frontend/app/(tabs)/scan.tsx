@@ -551,6 +551,7 @@ const styles = StyleSheet.create({
   },
   resultContainer: {
     alignItems: 'center',
+    paddingBottom: 24,
   },
   resultFoodName: {
     fontSize: 24,
