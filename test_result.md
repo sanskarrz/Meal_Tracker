@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Complete UX enhancement with loading skeletons, animations, error handling, and button functionality testing for the Healthism Calorie Tracker app"
+user_problem_statement: "Fix camera scanning functionality by switching from emergentintegrations to official OpenAI SDK for Vision API"
 
 backend:
   - task: "Authentication Flow"
@@ -116,6 +116,21 @@ backend:
         - working: true
           agent: "testing"
           comment: "Comprehensive authentication testing completed successfully. User registration (✅), login (✅), token validation (✅), and protected endpoint access (✅) all working correctly. JWT tokens are properly generated and validated."
+  
+  - task: "Camera Scanning with OpenAI Vision"
+    implemented: true
+    working: "NA"
+    file: "backend/server.py"
+    stuck_count: 3
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "Camera scanning not working - images not being processed correctly. Multiple attempts with emergentintegrations failed due to base64 encoding issues."
+        - working: "NA"
+          agent: "main"
+          comment: "MAJOR CHANGE: Switched from emergentintegrations to official OpenAI SDK. Updated analyze_food_with_gemini function to use AsyncOpenAI client with user-provided OpenAI API key. Removed emergentintegrations import. Added better error logging with traceback. Using gpt-4o model with temperature 0.3 for better consistency. Enhanced prompts for camera scanning to better identify food items. Base64 image format: data:image/jpeg;base64,{image_base64}"
 
   - task: "Manual Food Entry"
     implemented: true
