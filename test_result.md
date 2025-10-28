@@ -293,18 +293,18 @@ frontend:
           comment: "PARTIAL TESTING: API integration code is properly implemented with correct endpoints (/api/food/search), error handling, and success messages. Backend API confirmed working from previous tests. Frontend implementation includes proper axios calls, timeout handling, and user feedback. Unable to test full flow due to authentication completion limitations in test environment."
 
 metadata:
-  created_by: "testing_agent"
-  version: "1.0"
-  test_sequence: 2
+  created_by: "main_agent"
+  version: "2.0"
+  test_sequence: 3
   run_ui: false
 
 test_plan:
   current_focus:
-    - "Quick Search with Camera Button and Dropdown"
-    - "Food Search API Integration"
-  stuck_tasks: []
+    - "Camera Scanning with OpenAI Vision"
+  stuck_tasks:
+    - "Camera Scanning with OpenAI Vision"
   test_all: false
-  test_priority: "high_first"
+  test_priority: "stuck_first"
 
 agent_communication:
     - agent: "main"
@@ -325,3 +325,5 @@ agent_communication:
       message: "FRONTEND UI TESTING COMPLETE: ✅ App loads successfully with beautiful mobile-responsive design (390x844). ✅ Cross-platform authentication storage working perfectly. ✅ Login/Register screens properly implemented with smooth navigation. ✅ Fixed dependency issues (removed incompatible react-native-skeleton-placeholder, added proper loading states). ✅ All 5 tab navigation structure properly implemented (Home, Scan, Add, History, Profile). ✅ UI components for quick search, camera button, dropdown, edit/delete functionality are properly coded. ✅ API integration code correctly implemented with proper error handling. The frontend is production-ready with excellent UX design. Authentication system resolved - no longer a blocker."
     - agent: "testing"
       message: "COMPREHENSIVE BACKEND RE-VALIDATION COMPLETE: Executed complete test suite as requested covering all authentication, food analysis, CRUD operations, statistics, and AI integration endpoints. Results: 22/23 tests PASSED (95.7% success rate). ✅ Authentication Flow: User registration, login, token validation, protected endpoint access all working perfectly. ✅ Food Analysis & Entry: Manual food entry, image analysis (Gemini Vision), recipe analysis all functional. ✅ CRUD Operations: Today's entries, historical entries, food entry deletion working correctly. ✅ Statistics & Calculations: Daily stats, historical stats with accurate calorie/macro calculations. ✅ Error Handling: 401 unauthorized, 403 forbidden, proper authentication enforcement. ✅ AI Integration: Gemini Vision API working excellently with accurate nutrition data (banana: 105 cal, apple: 95 cal, rice: 130 cal). One minor network timeout on auth test but manual verification confirms proper security. Backend is production-ready and fully functional."
+    - agent: "main"
+      message: "MAJOR BACKEND CHANGE - CAMERA SCANNING FIX: Switched from emergentintegrations to official OpenAI Python SDK to fix persistent camera scanning issues. Updated server.py to use AsyncOpenAI client with user-provided OpenAI API key (sk-proj-0AhDQ...). Removed emergentintegrations dependency. Enhanced error logging with full traceback for debugging. Using gpt-4o model with temperature 0.3 for consistent results. Improved prompts to better identify food items from camera images. Image format: data:image/jpeg;base64,{base64_string}. Need comprehensive testing of: 1) POST /api/food/analyze-image endpoint with camera images 2) Verify OpenAI API key is working 3) Test food detection accuracy 4) Confirm proper error handling. This should resolve the 'scan again' infinite loop issue."
