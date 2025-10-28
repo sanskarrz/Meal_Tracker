@@ -261,12 +261,11 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
         if "serving_size" not in nutrition_data or nutrition_data["serving_size"] == "1 serving":
             nutrition_data["serving_size"] = "1 serving (weight not specified)"
         
-        # Reject low confidence results for image analysis
+        # CHANGED: Don't reject low confidence - show result and let user edit
+        # Users can correct the food name and serving size in the confirmation screen
         if image_base64 and nutrition_data.get("confidence") == "low":
-            raise HTTPException(
-                status_code=400, 
-                detail="Unable to confidently identify the food item. Please try again with a clearer image or enter the food name manually with specific details (e.g., 'Cadbury 45g', '2 rotis')."
-            )
+            # Add a note that this is a guess
+            nutrition_data["food_name"] = f"{nutrition_data.get('food_name', 'Unknown Food')} (estimated)"
         
         return nutrition_data
     except HTTPException:
