@@ -140,10 +140,10 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_query: Optional[str] = None) -> Dict[str, Any]:
     """Analyze food using OpenAI Vision API directly - optimized for Indian food items"""
     try:
-        # Use OpenAI SDK directly instead of emergentintegrations
+        # Use OpenAI SDK directly with official API key
         from openai import AsyncOpenAI
         
-        client = AsyncOpenAI(api_key=EMERGENT_LLM_KEY)
+        client = AsyncOpenAI(api_key=OPENAI_API_KEY)
         
         system_message = """You are a nutrition expert specializing in Indian and South Asian cuisine. 
         Provide SPECIFIC serving sizes using MEASURABLE units:
@@ -186,10 +186,15 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
             })
             
         elif image_base64:
-            # Image only
+            # Image only - camera scan
             prompt = """Carefully identify this food item and provide nutritional information.
             
-            Provide your best guess with the food type and estimated portion.
+            Look at the image and identify:
+            1. What type of food is visible
+            2. Approximate portion size based on visual cues
+            3. If it's packaged food, try to identify the brand and package size
+            
+            Provide your best estimate based on what you can see.
             
             Return ONLY valid JSON:
             {{
@@ -232,12 +237,12 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
             """
             messages.append({"role": "user", "content": prompt})
         
-        # Call OpenAI API directly
+        # Call OpenAI API directly with gpt-4o model
         response = await client.chat.completions.create(
             model="gpt-4o",
             messages=messages,
             max_tokens=500,
-            temperature=0.7
+            temperature=0.3
         )
         
         # Parse JSON response
@@ -245,6 +250,7 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
         import re
         
         response_text = response.choices[0].message.content
+        print(f"OpenAI Response: {response_text}")  # Debug log
         
         # Try to extract JSON from response
         json_match = re.search(r'\{(?:[^{}]|\{[^{}]*\})*\}', response_text)
@@ -274,15 +280,8 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
         
     except Exception as e:
         print(f"Error in OpenAI analysis: {str(e)}")
-        # Return error response
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to analyze food item: {str(e)}"
-        )
-    except HTTPException:
-        raise
-    except Exception as e:
-        print(f"Error in OpenAI analysis: {str(e)}")
+        import traceback
+        traceback.print_exc()
         # Return error response
         raise HTTPException(
             status_code=500,
