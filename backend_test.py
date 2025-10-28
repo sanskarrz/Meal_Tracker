@@ -635,8 +635,11 @@ def print_summary():
     print("="*80)
 
 def main():
-    """Run all tests"""
-    print("Starting Comprehensive Backend API Testing for Healthism Calorie Tracker")
+    """Run FOCUSED camera scanning tests with OpenAI Vision API"""
+    print("🚨 CRITICAL: Camera Scanning with OpenAI Vision API Testing")
+    print("="*80)
+    print("Focus: Testing the switch from emergentintegrations to official OpenAI SDK")
+    print("Critical Endpoint: POST /api/food/analyze-image")
     print("="*80)
     
     # Test health check first
@@ -650,29 +653,107 @@ def main():
         print("❌ Authentication failed. Cannot proceed with protected endpoint tests.")
         return
     
-    # Test food search endpoint (focus of this testing session)
-    test_food_search_endpoint(token)
+    print(f"✅ Authentication successful. Token obtained.")
     
-    # Test food analysis features
+    # MAIN FOCUS: Test camera scanning and OpenAI integration
+    print("\n🎯 STARTING CRITICAL CAMERA SCANNING TESTS...")
     entry_ids = test_food_analysis(token)
     
-    # Test food history and stats
-    today_entries = test_food_history(token)
+    # Quick verification of other endpoints that also use OpenAI
+    print("\n🔍 VERIFYING OTHER OPENAI-POWERED ENDPOINTS...")
+    test_food_search_endpoint(token)
     
-    # Test food management
-    test_food_management(token, entry_ids)
-    
-    # Test Gemini AI integration
-    test_gemini_integration(token)
-    
-    # Print comprehensive summary
-    print_summary()
+    # Print focused summary
+    print_camera_scanning_summary()
     
     # Save results to file
-    with open("/app/test_results_detailed.json", "w") as f:
+    with open("/app/camera_test_results.json", "w") as f:
         json.dump(test_results, f, indent=2, default=str)
     
-    print(f"\nDetailed results saved to: /app/test_results_detailed.json")
+    print(f"\n📊 Camera scanning test results saved to: /app/camera_test_results.json")
+
+def print_camera_scanning_summary():
+    """Print focused summary for camera scanning tests"""
+    print("\n" + "="*80)
+    print("🚨 CAMERA SCANNING TEST RESULTS SUMMARY")
+    print("="*80)
+    
+    # Focus on camera scanning results
+    camera_tests = test_results.get("camera_scanning", {})
+    openai_tests = test_results.get("openai_integration", {})
+    error_tests = test_results.get("error_handling", {})
+    auth_tests = test_results.get("authentication", {})
+    log_tests = test_results.get("backend_logs", {})
+    
+    print("\n🎯 CRITICAL CAMERA SCANNING RESULTS:")
+    print("-" * 50)
+    
+    critical_success = False
+    for test_name, result in camera_tests.items():
+        status = result["status"]
+        details = result["details"]
+        
+        if status == "PASS":
+            print(f"  ✅ {test_name}: {details}")
+            if test_name == "openai_vision_api":
+                critical_success = True
+        elif status == "FAIL":
+            print(f"  ❌ {test_name}: {details}")
+        else:
+            print(f"  ⚠️  {test_name}: {details}")
+    
+    print("\n🔍 OPENAI INTEGRATION RESULTS:")
+    print("-" * 40)
+    for test_name, result in openai_tests.items():
+        status = result["status"]
+        details = result["details"]
+        
+        if status == "PASS":
+            print(f"  ✅ {test_name}: {details}")
+        elif status == "FAIL":
+            print(f"  ❌ {test_name}: {details}")
+        else:
+            print(f"  ⚠️  {test_name}: {details}")
+    
+    print("\n🛡️ ERROR HANDLING & SECURITY:")
+    print("-" * 40)
+    for test_name, result in {**error_tests, **auth_tests}.items():
+        status = result["status"]
+        details = result["details"]
+        
+        if status == "PASS":
+            print(f"  ✅ {test_name}: {details}")
+        elif status == "FAIL":
+            print(f"  ❌ {test_name}: {details}")
+        else:
+            print(f"  ⚠️  {test_name}: {details}")
+    
+    print("\n📋 BACKEND LOGS:")
+    print("-" * 20)
+    for test_name, result in log_tests.items():
+        status = result["status"]
+        details = result["details"]
+        
+        if status == "PASS":
+            print(f"  ✅ {test_name}: {details}")
+        elif status == "FAIL":
+            print(f"  ❌ {test_name}: {details}")
+        else:
+            print(f"  ⚠️  {test_name}: {details}")
+    
+    print(f"\n{'='*80}")
+    print("🎯 FINAL VERDICT:")
+    
+    if critical_success:
+        print("🎉 ✅ CAMERA SCANNING WITH OPENAI VISION API IS WORKING!")
+        print("✅ The switch from emergentintegrations to OpenAI SDK was successful!")
+        test_results["overall_status"] = "CAMERA_SCANNING_SUCCESS"
+    else:
+        print("🚨 ❌ CAMERA SCANNING WITH OPENAI VISION API IS NOT WORKING!")
+        print("❌ The camera scanning functionality needs further investigation!")
+        test_results["overall_status"] = "CAMERA_SCANNING_FAILED"
+    
+    print("="*80)
 
 if __name__ == "__main__":
     main()
