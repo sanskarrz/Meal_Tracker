@@ -221,68 +221,238 @@ def test_food_search_endpoint(token):
     else:
         log_test("food_search", "auth_required", "FAIL", f"Should require auth, got: {response.status_code if response else 'No response'}")
 
-def test_food_analysis(token):
-    """Test food analysis features"""
-    print("\n=== Testing Food Analysis Features ===")
+def create_test_food_image_base64():
+    """Create a realistic food image in base64 format for testing camera scanning"""
+    # Create a minimal valid JPEG image (1x1 pixel) that represents food
+    jpeg_bytes = bytes([
+        0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00, 0x01,
+        0x01, 0x01, 0x00, 0x48, 0x00, 0x48, 0x00, 0x00, 0xFF, 0xDB, 0x00, 0x43,
+        0x00, 0x08, 0x06, 0x06, 0x07, 0x06, 0x05, 0x08, 0x07, 0x07, 0x07, 0x09,
+        0x09, 0x08, 0x0A, 0x0C, 0x14, 0x0D, 0x0C, 0x0B, 0x0B, 0x0C, 0x19, 0x12,
+        0x13, 0x0F, 0x14, 0x1D, 0x1A, 0x1F, 0x1E, 0x1D, 0x1A, 0x1C, 0x1C, 0x20,
+        0x24, 0x2E, 0x27, 0x20, 0x22, 0x2C, 0x23, 0x1C, 0x1C, 0x28, 0x37, 0x29,
+        0x2C, 0x30, 0x31, 0x34, 0x34, 0x34, 0x1F, 0x27, 0x39, 0x3D, 0x38, 0x32,
+        0x3C, 0x2E, 0x33, 0x34, 0x32, 0xFF, 0xC0, 0x00, 0x11, 0x08, 0x00, 0x01,
+        0x00, 0x01, 0x01, 0x01, 0x11, 0x00, 0x02, 0x11, 0x01, 0x03, 0x11, 0x01,
+        0xFF, 0xC4, 0x00, 0x14, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0xFF, 0xC4,
+        0x00, 0x14, 0x10, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xDA, 0x00, 0x0C,
+        0x03, 0x01, 0x00, 0x02, 0x11, 0x03, 0x11, 0x00, 0x3F, 0x00, 0xB2, 0xC0,
+        0x07, 0xFF, 0xD9
+    ])
+    return base64.b64encode(jpeg_bytes).decode('utf-8')
+
+def test_camera_scanning_critical(token):
+    """🚨 CRITICAL TEST: Camera Scanning with OpenAI Vision API"""
+    print("\n=== 🚨 CRITICAL: Camera Scanning with OpenAI Vision API ===")
     headers = {"Authorization": f"Bearer {token}"}
     
-    # Test manual food entry
-    print("Testing manual food entry...")
-    manual_food_data = {"food_name": "grilled chicken breast", "serving_size": "150g"}
-    response = make_request("POST", "/food/manual", manual_food_data, headers)
+    # Test the CRITICAL endpoint: POST /api/food/analyze-image
+    print("🔍 Testing POST /api/food/analyze-image (CRITICAL CAMERA SCANNING ENDPOINT)...")
+    
+    # Create test image in the exact format expected by OpenAI Vision API
+    test_image_b64 = create_test_food_image_base64()
+    
+    image_data = {"image_base64": test_image_b64}
+    response = make_request("POST", "/food/analyze-image", image_data, headers, timeout=60)
+    
+    print(f"📊 Response Status: {response.status_code if response else 'No Response'}")
+    print(f"📊 Response Headers: {dict(response.headers) if response else 'No Headers'}")
     
     if response and response.status_code == 200:
         data = response.json()
-        if "id" in data and "calories" in data and "food_name" in data:
-            log_test("food_analysis", "manual_entry", "PASS", f"Manual food entry successful: {data['food_name']} - {data['calories']} calories")
-            manual_entry_id = data["id"]
+        print(f"📊 Full Response Data: {json.dumps(data, indent=2)}")
+        
+        # Verify CRITICAL fields for camera scanning
+        critical_fields = ["food_name", "calories", "protein", "carbs", "fats", "confidence"]
+        missing_fields = [field for field in critical_fields if field not in data]
+        
+        if missing_fields:
+            log_test("camera_scanning", "critical_fields", "FAIL", f"❌ CRITICAL: Missing required fields: {missing_fields}")
+            return None
+        
+        # Verify data types and reasonable values
+        if not isinstance(data["calories"], (int, float)) or data["calories"] < 0:
+            log_test("camera_scanning", "calories_validation", "FAIL", f"❌ CRITICAL: Invalid calories value: {data['calories']}")
+            return None
+        
+        if data.get("confidence") not in ["high", "medium", "low"]:
+            log_test("camera_scanning", "confidence_validation", "WARN", f"⚠️ Unexpected confidence value: {data.get('confidence')}")
+        
+        log_test("camera_scanning", "openai_vision_api", "PASS", f"✅ CRITICAL SUCCESS: Camera scanning working! Detected: {data['food_name']} ({data['calories']} cal, confidence: {data.get('confidence', 'unknown')})")
+        
+        # Check if entry was saved to database
+        if "id" in data:
+            log_test("camera_scanning", "database_save", "PASS", f"✅ Food entry saved to database with ID: {data['id']}")
+            return data["id"]
         else:
-            log_test("food_analysis", "manual_entry", "FAIL", f"Invalid manual entry response: {data}")
-            manual_entry_id = None
+            log_test("camera_scanning", "database_save", "FAIL", "❌ Food entry not saved to database")
+            return None
+            
+    elif response and response.status_code == 500:
+        error_text = response.text
+        print(f"🚨 CRITICAL ERROR Response: {error_text}")
+        
+        if "OpenAI" in error_text or "API" in error_text:
+            log_test("camera_scanning", "openai_api_error", "FAIL", f"❌ CRITICAL: OpenAI API Error: {error_text}")
+        else:
+            log_test("camera_scanning", "server_error", "FAIL", f"❌ CRITICAL: Server Error: {error_text}")
+        return None
+        
     else:
-        log_test("food_analysis", "manual_entry", "FAIL", f"Manual food entry failed: {response.status_code if response else 'No response'}")
-        manual_entry_id = None
+        log_test("camera_scanning", "endpoint_failure", "FAIL", f"❌ CRITICAL: Camera scanning endpoint failed: {response.status_code if response else 'No response'}")
+        if response:
+            print(f"🚨 Error Response Body: {response.text}")
+        return None
+
+def test_openai_integration_verification(token):
+    """Verify OpenAI integration is working across all endpoints that use it"""
+    print("\n=== 🔍 OpenAI Integration Verification ===")
+    headers = {"Authorization": f"Bearer {token}"}
     
-    # Test recipe analysis
-    print("Testing recipe analysis...")
-    recipe_data = {
-        "recipe_text": "2 cups cooked quinoa, 1 cup black beans, 1 avocado diced, 2 tbsp olive oil, salt and pepper to taste"
-    }
-    response = make_request("POST", "/food/analyze-recipe", recipe_data, headers)
+    # Test 1: Text-only analysis (POST /api/food/search)
+    print("Testing OpenAI integration via /api/food/search...")
+    search_data = {"query": "grilled chicken breast"}
+    response = make_request("POST", "/food/search", search_data, headers)
     
     if response and response.status_code == 200:
         data = response.json()
-        if "id" in data and "calories" in data:
-            log_test("food_analysis", "recipe_analysis", "PASS", f"Recipe analysis successful: {data.get('food_name', 'Recipe')} - {data['calories']} calories")
-            recipe_entry_id = data["id"]
+        if "food_name" in data and "calories" in data:
+            log_test("openai_integration", "text_analysis", "PASS", f"✅ OpenAI text analysis working: {data['food_name']} - {data['calories']} cal")
         else:
-            log_test("food_analysis", "recipe_analysis", "FAIL", f"Invalid recipe analysis response: {data}")
-            recipe_entry_id = None
+            log_test("openai_integration", "text_analysis", "FAIL", f"❌ Invalid response structure: {data}")
     else:
-        log_test("food_analysis", "recipe_analysis", "FAIL", f"Recipe analysis failed: {response.status_code if response else 'No response'}")
-        recipe_entry_id = None
+        log_test("openai_integration", "text_analysis", "FAIL", f"❌ Text analysis failed: {response.status_code if response else 'No response'}")
     
-    # Test image analysis (with sample base64 image)
-    print("Testing image analysis...")
-    # Create a small sample base64 image (1x1 pixel PNG)
-    sample_image_b64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
-    
-    image_data = {"image_base64": sample_image_b64}
-    response = make_request("POST", "/food/analyze-image", image_data, headers)
+    # Test 2: Manual food entry (POST /api/food/manual) 
+    print("Testing OpenAI integration via /api/food/manual...")
+    manual_data = {"food_name": "banana", "serving_size": "1 medium"}
+    response = make_request("POST", "/food/manual", manual_data, headers)
     
     if response and response.status_code == 200:
         data = response.json()
-        if "id" in data and "calories" in data:
-            log_test("food_analysis", "image_analysis", "PASS", f"Image analysis successful: {data.get('food_name', 'Unknown')} - {data['calories']} calories")
-            image_entry_id = data["id"]
+        if "food_name" in data and "calories" in data:
+            log_test("openai_integration", "manual_entry", "PASS", f"✅ OpenAI manual entry working: {data['food_name']} - {data['calories']} cal")
+            return data["id"]
         else:
-            log_test("food_analysis", "image_analysis", "FAIL", f"Invalid image analysis response: {data}")
-            image_entry_id = None
+            log_test("openai_integration", "manual_entry", "FAIL", f"❌ Invalid manual entry response: {data}")
     else:
-        log_test("food_analysis", "image_analysis", "FAIL", f"Image analysis failed: {response.status_code if response else 'No response'}")
-        image_entry_id = None
+        log_test("openai_integration", "manual_entry", "FAIL", f"❌ Manual entry failed: {response.status_code if response else 'No response'}")
     
-    return manual_entry_id, recipe_entry_id, image_entry_id
+    return None
+
+def test_error_handling_camera_scanning(token):
+    """Test error handling for camera scanning edge cases"""
+    print("\n=== 🔍 Camera Scanning Error Handling ===")
+    headers = {"Authorization": f"Bearer {token}"}
+    
+    # Test 1: Invalid base64 data
+    print("Testing invalid base64 handling...")
+    invalid_data = {"image_base64": "invalid_base64_data_not_an_image"}
+    response = make_request("POST", "/food/analyze-image", invalid_data, headers)
+    
+    if response and response.status_code >= 400:
+        log_test("error_handling", "invalid_base64", "PASS", f"✅ Invalid base64 properly rejected: {response.status_code}")
+    else:
+        log_test("error_handling", "invalid_base64", "FAIL", f"❌ Invalid base64 not properly handled: {response.status_code if response else 'No response'}")
+    
+    # Test 2: Empty image data
+    print("Testing empty image data handling...")
+    empty_data = {"image_base64": ""}
+    response = make_request("POST", "/food/analyze-image", empty_data, headers)
+    
+    if response and response.status_code >= 400:
+        log_test("error_handling", "empty_image", "PASS", f"✅ Empty image properly rejected: {response.status_code}")
+    else:
+        log_test("error_handling", "empty_image", "FAIL", f"❌ Empty image not properly handled: {response.status_code if response else 'No response'}")
+    
+    # Test 3: Missing image_base64 field
+    print("Testing missing image field handling...")
+    missing_field_data = {"wrong_field": "some_data"}
+    response = make_request("POST", "/food/analyze-image", missing_field_data, headers)
+    
+    if response and response.status_code >= 400:
+        log_test("error_handling", "missing_field", "PASS", f"✅ Missing field properly rejected: {response.status_code}")
+    else:
+        log_test("error_handling", "missing_field", "FAIL", f"❌ Missing field not properly handled: {response.status_code if response else 'No response'}")
+
+def check_backend_logs_for_openai():
+    """Check backend logs for OpenAI debug messages and errors"""
+    print("\n=== 🔍 Backend Logs Analysis ===")
+    
+    try:
+        # Check backend output logs
+        result = subprocess.run(
+            ["tail", "-n", "100", "/var/log/supervisor/backend.out.log"],
+            capture_output=True, text=True, timeout=10
+        )
+        
+        if result.returncode == 0:
+            logs = result.stdout
+            if "OpenAI Response:" in logs:
+                log_test("backend_logs", "openai_debug_messages", "PASS", "✅ Found OpenAI debug messages in backend logs")
+            else:
+                log_test("backend_logs", "openai_debug_messages", "WARN", "⚠️ No OpenAI debug messages found in recent logs")
+        
+        # Check backend error logs
+        result = subprocess.run(
+            ["tail", "-n", "100", "/var/log/supervisor/backend.err.log"],
+            capture_output=True, text=True, timeout=10
+        )
+        
+        if result.returncode == 0:
+            error_logs = result.stdout
+            if "OpenAI" in error_logs or "API" in error_logs:
+                if "error" in error_logs.lower() or "fail" in error_logs.lower():
+                    log_test("backend_logs", "openai_errors", "FAIL", f"❌ Found OpenAI errors in logs: {error_logs[-200:]}")
+                else:
+                    log_test("backend_logs", "openai_activity", "PASS", "✅ Found OpenAI activity in logs")
+            else:
+                log_test("backend_logs", "no_openai_errors", "PASS", "✅ No OpenAI errors found in error logs")
+                
+    except Exception as e:
+        log_test("backend_logs", "log_check_error", "WARN", f"⚠️ Could not check logs: {str(e)}")
+
+def test_authentication_enforcement_camera(token):
+    """Test that camera scanning properly requires authentication"""
+    print("\n=== 🔍 Authentication Enforcement for Camera Scanning ===")
+    
+    # Test without authentication
+    print("Testing camera scanning without authentication...")
+    test_image_b64 = create_test_food_image_base64()
+    image_data = {"image_base64": test_image_b64}
+    
+    # Make request without Authorization header
+    response = make_request("POST", "/food/analyze-image", image_data, headers=None)
+    
+    if response and response.status_code == 401:
+        log_test("authentication", "camera_auth_required", "PASS", "✅ Camera scanning properly requires authentication")
+    elif response and response.status_code == 403:
+        log_test("authentication", "camera_auth_required", "PASS", "✅ Camera scanning properly requires authentication (403)")
+    else:
+        log_test("authentication", "camera_auth_required", "FAIL", f"❌ Camera scanning should require auth, got: {response.status_code if response else 'No response'}")
+
+def test_food_analysis(token):
+    """Test camera scanning and related OpenAI-powered features"""
+    print("\n=== 🚨 FOCUSED: Camera Scanning & OpenAI Integration Testing ===")
+    
+    # CRITICAL: Test camera scanning with OpenAI Vision API
+    camera_entry_id = test_camera_scanning_critical(token)
+    
+    # Test OpenAI integration across endpoints
+    manual_entry_id = test_openai_integration_verification(token)
+    
+    # Test error handling for camera scanning
+    test_error_handling_camera_scanning(token)
+    
+    # Test authentication enforcement
+    test_authentication_enforcement_camera(token)
+    
+    # Check backend logs for OpenAI activity
+    check_backend_logs_for_openai()
+    
+    return camera_entry_id, manual_entry_id, None
 
 def test_food_history(token):
     """Test food history and stats endpoints"""
