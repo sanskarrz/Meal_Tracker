@@ -570,16 +570,20 @@ async def update_food_entry(entry_id: str, request: dict, current_user = Depends
         # Update serving size if provided
         new_serving_size = request.get("serving_size")
         if new_serving_size:
-            # Recalculate nutrition based on the new serving size
-            food_name = entry.get("food_name", "Unknown Food")
-            old_serving_size = entry.get("serving_size", "1 serving")
+            # Get base food name (remove old serving size in parentheses if exists)
+            old_food_name = entry.get("food_name", "Unknown Food")
+            base_food_name = old_food_name.split('(')[0].strip()
             
-            # Use AI to recalculate nutrition for the new serving size
-            prompt = f"Recalculate nutrition for {food_name}. Original was {old_serving_size}, new serving is {new_serving_size}. Provide accurate values for Indian market."
+            # Create new food name with new serving size
+            new_food_name = f"{base_food_name} ({new_serving_size})"
+            
+            # Recalculate nutrition based on the new serving size
+            prompt = f"Recalculate nutrition for {base_food_name}. New serving is {new_serving_size}. Provide accurate values for Indian market."
             nutrition_data = await analyze_food_with_gemini(text_query=prompt)
             
-            # Update the entry with new nutrition values
+            # Update the entry with new nutrition values AND new food name
             update_data = {
+                "food_name": new_food_name,  # UPDATE FOOD NAME TOO!
                 "serving_size": new_serving_size,
                 "calories": nutrition_data.get("calories", entry.get("calories", 0)),
                 "protein": nutrition_data.get("protein", entry.get("protein", 0)),
