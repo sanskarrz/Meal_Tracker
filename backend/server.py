@@ -137,22 +137,22 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     return user
 
 async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_query: Optional[str] = None) -> Dict[str, Any]:
-    """Analyze food using OpenAI Vision API (GPT-4o) - optimized for Indian food items"""
+    """Analyze food using OpenAI GPT-5 Vision API - optimized for Indian food items"""
     try:
-        # Create chat instance with OpenAI GPT-4o
+        # Create chat instance with OpenAI GPT-5 (latest model with best vision)
         chat = LlmChat(
             api_key=EMERGENT_LLM_KEY,
             session_id=f"food_analysis_{datetime.now().timestamp()}",
             system_message="""You are a nutrition expert specializing in Indian and South Asian cuisine. 
             Provide SPECIFIC serving sizes using MEASURABLE units:
-            - For packaged foods: ALWAYS include brand AND weight (e.g., "Cadbury Dairy Milk 45g", "Parle-G 50g")
+            - For packaged foods: Try to identify brand AND weight (e.g., "Kellogg's Corn Flakes 100g", "Cadbury 45g")
             - For home-cooked foods: Use specific Indian units (e.g., "2 medium rotis (60g each)", "1 katori dal (150ml)")
             - For fruits/vegetables: Use pieces with weight (e.g., "1 medium banana (120g)", "2 medium potatoes (200g)")
             - NEVER use vague terms like "1 serving" - always quantify
             
-            If you cannot confidently identify the food, set confidence to 'low' and food_name to 'Unknown Food'.
+            Always provide your best estimate even if image quality is not perfect.
             Be VERY accurate with portion sizes and calorie counts for Indian market."""
-        ).with_model("openai", "gpt-4o")
+        ).with_model("openai", "gpt-5")  # Using GPT-5 - best vision model
         
         # Prepare prompt
         if image_base64 and text_query:
