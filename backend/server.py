@@ -181,13 +181,14 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
             
             CRITICAL REQUIREMENTS:
             1. Look for brand names, packaging, labels in the image
-            2. If packaged food: MUST include brand and weight (e.g., "Cadbury Dairy Milk 45g", "Lays Classic 50g")
+            2. If packaged food: Try to identify brand and weight (e.g., "Kellogg's Corn Flakes 100g", "Lays Classic 50g")
             3. If home-cooked: Estimate portion size with specific units (e.g., "2 medium rotis (60g each)", "1 katori dal (150ml)")
-            4. If unclear or poor quality: set confidence to 'low' and food_name to 'Unknown Food'
+            4. Even if you're not 100% certain, provide your best guess with the food type and estimated portion
+            5. Only set confidence to 'low' if you truly cannot tell what type of food it is
             
             Return ONLY valid JSON:
             {{
-                "food_name": "specific name - MUST include brand and weight if visible",
+                "food_name": "specific name - include brand and weight if visible, otherwise best estimate",
                 "calories": number,
                 "protein": number in grams,
                 "carbs": number in grams,
@@ -197,7 +198,8 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
             }}
             
             Example good responses:
-            - "Cadbury Dairy Milk 45g" with serving_size "1 bar (45g)"
+            - "Kellogg's Corn Flakes (1 bowl - 50g)" with confidence "medium"
+            - "Corn Flakes (1 bowl - 50g)" with confidence "medium" (if brand not visible)
             - "Parle-G Biscuits" with serving_size "4 biscuits (25g)"
             - "Chicken Biryani" with serving_size "1 plate (300g)"
             """
