@@ -278,84 +278,90 @@ export default function ScanScreen() {
               </TouchableOpacity>
             </View>
             
-            {lastResult && (
-              <View style={styles.resultContainer}>
-                {/* Section 1: Food Name - Large and Clear */}
-                <Text style={styles.confirmLabel}>Food Name</Text>
-                <View style={styles.largeInputBox}>
-                  <TextInput
-                    style={styles.largeInput}
-                    value={lastResult.food_name}
-                    onChangeText={(text) => setLastResult({...lastResult, food_name: text})}
-                    placeholderTextColor="#999"
-                    placeholder="Enter food name"
-                  />
-                  <Ionicons name="create-outline" size={24} color="#36B37E" />
-                </View>
-                
-                {/* Section 2: Nutrition Info - Big Display */}
-                <View style={styles.nutritionDisplayCard}>
-                  <View style={styles.caloriesBig}>
-                    <Text style={styles.caloriesBigValue}>{lastResult.calories}</Text>
-                    <Text style={styles.caloriesBigLabel}>Calories</Text>
+            <ScrollView 
+              style={styles.modalScroll}
+              showsVerticalScrollIndicator={false}
+              bounces={false}
+            >
+              {lastResult && (
+                <View style={styles.resultContainer}>
+                  {/* Section 1: Food Name - Large and Clear */}
+                  <Text style={styles.confirmLabel}>Food Name</Text>
+                  <View style={styles.largeInputBox}>
+                    <TextInput
+                      style={styles.largeInput}
+                      value={lastResult.food_name}
+                      onChangeText={(text) => setLastResult({...lastResult, food_name: text})}
+                      placeholderTextColor="#999"
+                      placeholder="Enter food name"
+                    />
+                    <Ionicons name="create-outline" size={24} color="#36B37E" />
                   </View>
-                  <View style={styles.macrosRow}>
-                    <View style={styles.macroBox}>
-                      <Text style={styles.macroBoxValue}>{lastResult.protein}g</Text>
-                      <Text style={styles.macroBoxLabel}>Protein</Text>
+                  
+                  {/* Section 2: Nutrition Info - Big Display */}
+                  <View style={styles.nutritionDisplayCard}>
+                    <View style={styles.caloriesBig}>
+                      <Text style={styles.caloriesBigValue}>{lastResult.calories}</Text>
+                      <Text style={styles.caloriesBigLabel}>Calories</Text>
                     </View>
-                    <View style={styles.macroBox}>
-                      <Text style={styles.macroBoxValue}>{lastResult.carbs}g</Text>
-                      <Text style={styles.macroBoxLabel}>Carbs</Text>
-                    </View>
-                    <View style={styles.macroBox}>
-                      <Text style={styles.macroBoxValue}>{lastResult.fats}g</Text>
-                      <Text style={styles.macroBoxLabel}>Fats</Text>
+                    <View style={styles.macrosRow}>
+                      <View style={styles.macroBox}>
+                        <Text style={styles.macroBoxValue}>{lastResult.protein}g</Text>
+                        <Text style={styles.macroBoxLabel}>Protein</Text>
+                      </View>
+                      <View style={styles.macroBox}>
+                        <Text style={styles.macroBoxValue}>{lastResult.carbs}g</Text>
+                        <Text style={styles.macroBoxLabel}>Carbs</Text>
+                      </View>
+                      <View style={styles.macroBox}>
+                        <Text style={styles.macroBoxValue}>{lastResult.fats}g</Text>
+                        <Text style={styles.macroBoxLabel}>Fats</Text>
+                      </View>
                     </View>
                   </View>
-                </View>
-                
-                {/* Section 3: Serving Size - Large and Clear */}
-                <Text style={styles.confirmLabel}>Serving Size</Text>
-                <View style={styles.largeInputBox}>
-                  <TextInput
-                    style={styles.largeInput}
-                    placeholder="e.g., '2 rotis', '45g', '1 cup'"
-                    value={servingSize}
-                    onChangeText={setServingSize}
-                    placeholderTextColor="#999"
-                  />
-                  <Ionicons name="create-outline" size={24} color="#36B37E" />
-                </View>
-                
-                <Text style={styles.confirmHint}>
-                  ✏️ Edit the details above before adding to your log
-                </Text>
-                
-                {/* Large Confirm Button */}
-                <TouchableOpacity
-                  style={styles.confirmButton}
-                  onPress={addToLog}
-                  disabled={isAnalyzing}
-                >
-                  <LinearGradient
-                    colors={['#36B37E', '#2A9D68']}
-                    style={styles.confirmGradient}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
+                  
+                  {/* Section 3: Serving Size - Large and Clear */}
+                  <Text style={styles.confirmLabel}>Serving Size</Text>
+                  <View style={styles.largeInputBox}>
+                    <TextInput
+                      style={styles.largeInput}
+                      placeholder="e.g., '2 rotis', '45g', '1 cup'"
+                      value={servingSize}
+                      onChangeText={setServingSize}
+                      placeholderTextColor="#999"
+                    />
+                    <Ionicons name="create-outline" size={24} color="#36B37E" />
+                  </View>
+                  
+                  <Text style={styles.confirmHint}>
+                    ✏️ Edit the details above before adding to your log
+                  </Text>
+                  
+                  {/* Large Confirm Button */}
+                  <TouchableOpacity
+                    style={styles.confirmButton}
+                    onPress={addToLog}
+                    disabled={isAnalyzing}
                   >
-                    {isAnalyzing ? (
-                      <ActivityIndicator color="white" size="large" />
-                    ) : (
-                      <>
-                        <Ionicons name="checkmark-circle" size={28} color="white" />
-                        <Text style={styles.confirmButtonText}>Confirm & Add to Log</Text>
-                      </>
-                    )}
-                  </LinearGradient>
-                </TouchableOpacity>
-              </View>
-            )}
+                    <LinearGradient
+                      colors={['#36B37E', '#2A9D68']}
+                      style={styles.confirmGradient}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                    >
+                      {isAnalyzing ? (
+                        <ActivityIndicator color="white" size="large" />
+                      ) : (
+                        <>
+                          <Ionicons name="checkmark-circle" size={28} color="white" />
+                          <Text style={styles.confirmButtonText}>Confirm & Add to Log</Text>
+                        </>
+                      )}
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </ScrollView>
           </Animated.View>
         </View>
       </Modal>
