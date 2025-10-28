@@ -304,8 +304,7 @@ metadata:
 test_plan:
   current_focus:
     - "Camera Scanning with OpenAI Vision"
-  stuck_tasks:
-    - "Camera Scanning with OpenAI Vision"
+  stuck_tasks: []
   test_all: false
   test_priority: "stuck_first"
 
