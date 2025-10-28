@@ -141,8 +141,30 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
     try:
         # Use OpenAI SDK directly with official API key
         from openai import AsyncOpenAI
+        import re
         
         client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+        
+        # Sanitize base64 if provided
+        if image_base64:
+            # Remove any whitespace, newlines, and invalid characters
+            image_base64 = re.sub(r'[^A-Za-z0-9+/=]', '', image_base64)
+            
+            # Ensure proper base64 padding
+            missing_padding = len(image_base64) % 4
+            if missing_padding:
+                image_base64 += '=' * (4 - missing_padding)
+            
+            # Validate base64 by trying to decode it
+            try:
+                base64.b64decode(image_base64)
+                print(f"✅ Base64 validation successful. Length: {len(image_base64)}")
+            except Exception as e:
+                print(f"❌ Base64 validation failed: {str(e)}")
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Invalid base64 image data. Please try capturing the image again."
+                )
         
         system_message = """You are a nutrition expert specializing in Indian and South Asian cuisine. 
         Provide SPECIFIC serving sizes using MEASURABLE units:
