@@ -3,109 +3,114 @@
     "register": {
       "status": "PASS",
       "details": "User registration successful",
-      "timestamp": "2025-10-28T11:56:32.809806"
+      "timestamp": "2025-10-28T11:57:32.472782"
     },
     "login": {
       "status": "PASS",
       "details": "Login successful",
-      "timestamp": "2025-10-28T11:56:33.068159"
+      "timestamp": "2025-10-28T11:57:32.737638"
     },
     "token_validation": {
       "status": "PASS",
       "details": "Token validation successful",
-      "timestamp": "2025-10-28T11:56:33.110551"
+      "timestamp": "2025-10-28T11:57:32.779577"
     },
     "protected_access": {
       "status": "PASS",
       "details": "Protected endpoint accessible with valid token",
-      "timestamp": "2025-10-28T11:56:33.208076"
+      "timestamp": "2025-10-28T11:57:32.814682"
     },
     "camera_auth_required": {
       "status": "FAIL",
       "details": "\u274c Camera scanning should require auth, got: No response",
-      "timestamp": "2025-10-28T11:56:40.154114"
+      "timestamp": "2025-10-28T11:57:41.789190"
     }
   },
   "food_analysis": {},
   "food_history": {},
   "food_management": {},
   "gemini_integration": {},
-  "overall_status": "CAMERA_SCANNING_FAILED",
+  "overall_status": "CAMERA_SCANNING_SUCCESS",
   "basic": {
     "health_check": {
       "status": "PASS",
       "details": "Backend server is healthy",
-      "timestamp": "2025-10-28T11:56:32.478705"
+      "timestamp": "2025-10-28T11:57:32.208174"
     }
   },
   "camera_scanning": {
-    "endpoint_failure": {
-      "status": "FAIL",
-      "details": "\u274c CRITICAL: Camera scanning endpoint failed: No response",
-      "timestamp": "2025-10-28T11:56:34.415049"
+    "openai_vision_api": {
+      "status": "PASS",
+      "details": "\u2705 CRITICAL SUCCESS: Camera scanning working! Detected: Unknown Food (estimated) (estimated) (200 cal, confidence: low)",
+      "timestamp": "2025-10-28T11:57:34.433928"
+    },
+    "database_save": {
+      "status": "PASS",
+      "details": "\u2705 Food entry saved to database with ID: 6900afaebbf25858846f9a0b",
+      "timestamp": "2025-10-28T11:57:34.433941"
     }
   },
   "openai_integration": {
     "text_analysis": {
       "status": "PASS",
-      "details": "\u2705 OpenAI text analysis working: Grilled Chicken Breast 200g - 330 cal",
-      "timestamp": "2025-10-28T11:56:35.854579"
+      "details": "\u2705 OpenAI text analysis working: Grilled Chicken Breast 150g - 165 cal",
+      "timestamp": "2025-10-28T11:57:35.346042"
     },
     "manual_entry": {
       "status": "PASS",
-      "details": "\u2705 OpenAI manual entry working: Banana - 105 cal",
-      "timestamp": "2025-10-28T11:56:39.213040"
+      "details": "\u2705 OpenAI manual entry working: banana - 105 cal",
+      "timestamp": "2025-10-28T11:57:40.538360"
     }
   },
   "error_handling": {
     "invalid_base64": {
       "status": "FAIL",
       "details": "\u274c Invalid base64 not properly handled: No response",
-      "timestamp": "2025-10-28T11:56:39.453542"
+      "timestamp": "2025-10-28T11:57:40.813112"
     },
     "empty_image": {
       "status": "FAIL",
       "details": "\u274c Empty image not properly handled: No response",
-      "timestamp": "2025-10-28T11:56:40.072622"
+      "timestamp": "2025-10-28T11:57:41.676409"
     },
     "missing_field": {
       "status": "FAIL",
       "details": "\u274c Missing field not properly handled: No response",
-      "timestamp": "2025-10-28T11:56:40.114651"
+      "timestamp": "2025-10-28T11:57:41.712288"
     }
   },
   "backend_logs": {
     "openai_debug_messages": {
       "status": "PASS",
       "details": "\u2705 Found OpenAI debug messages in backend logs",
-      "timestamp": "2025-10-28T11:56:40.158471"
+      "timestamp": "2025-10-28T11:57:41.794331"
     },
     "no_openai_errors": {
       "status": "PASS",
       "details": "\u2705 No OpenAI errors found in error logs",
-      "timestamp": "2025-10-28T11:56:40.161478"
+      "timestamp": "2025-10-28T11:57:41.797531"
     }
   },
   "food_search": {
     "apple_search": {
       "status": "PASS",
       "details": "Apple search: medium apple (182g) - 95 cal, P:0.5g, C:25g, F:0.3g",
-      "timestamp": "2025-10-28T11:56:41.662624"
+      "timestamp": "2025-10-28T11:57:42.848240"
     },
     "chicken_search": {
       "status": "PASS",
       "details": "Chicken search: Raw Chicken Breast (100g) - 165 cal, P:31g, C:0g, F:3.6g",
-      "timestamp": "2025-10-28T11:56:43.296326"
+      "timestamp": "2025-10-28T11:57:51.257043"
     },
     "empty_query": {
       "status": "PASS",
       "details": "Empty query handled gracefully: 200",
-      "timestamp": "2025-10-28T11:56:44.377204"
+      "timestamp": "2025-10-28T11:57:57.235553"
     },
     "auth_required": {
       "status": "FAIL",
       "details": "Should require auth, got: No response",
-      "timestamp": "2025-10-28T11:56:44.428167"
+      "timestamp": "2025-10-28T11:57:57.290958"
     }
   }
 }
