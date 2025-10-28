@@ -57,7 +57,8 @@ def make_request(method, endpoint, data=None, headers=None, timeout=30):
         
         return response
     except requests.exceptions.RequestException as e:
-        return None, str(e)
+        print(f"Request error for {method} {url}: {str(e)}")
+        return None
 
 def test_health_check():
     """Test basic health endpoint"""
