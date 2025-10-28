@@ -173,8 +173,8 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
                 "confidence": "high/medium/low"
             }}
             """
-            # Add data URI prefix for OpenAI Vision API
-            image_content = ImageContent(image_base64=f"data:image/jpeg;base64,{image_base64}")
+            # emergentintegrations expects RAW base64, NOT data URI format
+            image_content = ImageContent(image_base64=image_base64)
             message = UserMessage(text=prompt, file_contents=[image_content])
             
         elif image_base64:
@@ -204,8 +204,8 @@ async def analyze_food_with_gemini(image_base64: Optional[str] = None, text_quer
             - "Parle-G Biscuits" with serving_size "4 biscuits (25g)"
             - "Chicken Biryani" with serving_size "1 plate (300g)"
             """
-            # Add data URI prefix for OpenAI Vision API
-            image_content = ImageContent(image_base64=f"data:image/jpeg;base64,{image_base64}")
+            # emergentintegrations expects RAW base64, NOT data URI format
+            image_content = ImageContent(image_base64=image_base64)
             message = UserMessage(text=prompt, file_contents=[image_content])
             
         else:
