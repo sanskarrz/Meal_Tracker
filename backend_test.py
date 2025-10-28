@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend API Testing for Healthism Calorie Tracker
-Tests all authentication, food analysis, and data management endpoints
+FOCUSED Backend Testing for Camera Scanning with OpenAI Vision API
+Testing the critical camera scanning functionality that was switched from emergentintegrations to OpenAI SDK
 """
 
 import requests
@@ -10,12 +10,13 @@ import base64
 import time
 from datetime import datetime, timedelta
 import sys
+import subprocess
 
 # Configuration
 BASE_URL = "https://nutritrack-plus-1.preview.emergentagent.com/api"
 TEST_USER = {
-    "username": "healthtest_user",
-    "email": "healthtest@example.com", 
+    "username": f"cameratest_{int(time.time())}",
+    "email": f"cameratest_{int(time.time())}@example.com", 
     "password": "SecurePass123!",
     "daily_calorie_goal": 2200
 }
