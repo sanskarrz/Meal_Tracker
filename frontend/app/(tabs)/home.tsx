@@ -603,8 +603,6 @@ export default function HomeScreen() {
                     )}
                   </LinearGradient>
                 </TouchableOpacity>
-              </View>
-            )}
           </View>
         </View>
       </Modal>
