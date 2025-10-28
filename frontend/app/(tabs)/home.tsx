@@ -581,28 +581,29 @@ export default function HomeScreen() {
                 </View>
               )}
             </ScrollView>
-                
-                <TouchableOpacity
-                  style={styles.saveButton}
-                  onPress={saveEdit}
-                  disabled={loading}
-                >
-                  <LinearGradient
-                    colors={['#36B37E', '#2A9D68']}
-                    style={styles.saveButtonGradient}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                  >
-                    {loading ? (
-                      <ActivityIndicator color="white" />
-                    ) : (
-                      <>
-                        <Ionicons name="checkmark-circle" size={20} color="white" />
-                        <Text style={styles.saveButtonText}>Save Changes</Text>
-                      </>
-                    )}
-                  </LinearGradient>
-                </TouchableOpacity>
+            
+            {/* Save Button - Fixed at bottom */}
+            <TouchableOpacity
+              style={styles.saveButton}
+              onPress={saveEdit}
+              disabled={loading}
+            >
+              <LinearGradient
+                colors={['#36B37E', '#2A9D68']}
+                style={styles.saveButtonGradient}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+              >
+                {loading ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <>
+                    <Ionicons name="checkmark-circle" size={20} color="white" />
+                    <Text style={styles.saveButtonText}>Save Changes</Text>
+                  </>
+                )}
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
