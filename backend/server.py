@@ -691,7 +691,7 @@ async def delete_food_entry(entry_id: str, current_user = Depends(get_current_us
 
 @app.put("/api/food/{entry_id}")
 async def update_food_entry(entry_id: str, request: dict, current_user = Depends(get_current_user)):
-    """Update a food entry - accepts serving_size and/or serving_weight"""
+    """Update a food entry - recalculates nutrition if serving size or weight changes"""
     try:
         # Get the existing entry
         entry = food_entries_collection.find_one({
@@ -703,16 +703,54 @@ async def update_food_entry(entry_id: str, request: dict, current_user = Depends
             raise HTTPException(status_code=404, detail="Food entry not found")
         
         update_data = {}
+        should_recalculate = False
         
-        # Update serving size if provided
+        # Check if serving size or weight changed
         new_serving_size = request.get("serving_size")
-        if new_serving_size:
-            update_data["serving_size"] = new_serving_size
-        
-        # Update serving weight if provided
         new_serving_weight = request.get("serving_weight")
-        if new_serving_weight:
-            update_data["serving_weight"] = int(new_serving_weight)
+        
+        if new_serving_size or new_serving_weight:
+            should_recalculate = True
+            
+            # Build the query for AI
+            food_name = entry.get("food_name", "Unknown Food")
+            
+            # Use the new serving size if provided, otherwise use existing
+            serving_description = new_serving_size if new_serving_size else entry.get("serving_size", "1 serving")
+            
+            # Use the new weight if provided, otherwise use existing
+            serving_weight_value = new_serving_weight if new_serving_weight else entry.get("serving_weight", 100)
+            
+            # Ask AI to recalculate nutrition based on new serving
+            prompt = f"""Provide accurate nutritional information for: {food_name}
+            
+            Serving size: {serving_description}
+            Serving weight: {serving_weight_value}g
+            
+            Calculate nutrition values for this EXACT serving size/weight.
+            Use Indian market standards and FSSAI-approved values.
+            
+            Return ONLY valid JSON:
+            {{
+                "calories": number (for this serving),
+                "protein": number in grams,
+                "carbs": number in grams,
+                "fats": number in grams
+            }}
+            """
+            
+            # Get recalculated nutrition from AI
+            nutrition_data = await analyze_food_with_gemini(text_query=prompt)
+            
+            # Update with new values
+            update_data = {
+                "serving_size": serving_description,
+                "serving_weight": int(serving_weight_value),
+                "calories": nutrition_data.get("calories", entry.get("calories", 0)),
+                "protein": nutrition_data.get("protein", entry.get("protein", 0)),
+                "carbs": nutrition_data.get("carbs", entry.get("carbs", 0)),
+                "fats": nutrition_data.get("fats", entry.get("fats", 0))
+            }
         
         # If we have updates, save them
         if update_data:
@@ -725,7 +763,7 @@ async def update_food_entry(entry_id: str, request: dict, current_user = Depends
                 raise HTTPException(status_code=400, detail="Failed to update entry")
             
             return {
-                "message": "Food entry updated successfully",
+                "message": "Food entry updated successfully with recalculated nutrition",
                 "updated_values": update_data
             }
         
