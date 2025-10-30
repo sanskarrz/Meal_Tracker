@@ -195,6 +195,18 @@ backend:
           agent: "testing"
           comment: "Food entry deletion via DELETE /api/food/{entry_id} working correctly. Successfully deleted test entry and returned proper confirmation message. User authorization properly enforced."
 
+  - task: "Food Entry Update - Serving Weight and Name Consistency"
+    implemented: true
+    working: false
+    file: "backend/server.py"
+    stuck_count: 1
+    priority: "critical"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "CRITICAL BUG CONFIRMED: When updating only serving_weight via PUT /api/food/{id}, the food_name still shows old weight reference. Example: 'Rice Bowl (250g)' remains even when serving_weight updated to 100g. Root cause: Lines 753-755 in server.py reuse existing serving_size which contains old weight. Need to generate new serving_size when only serving_weight is provided. User reported: 'Food name still shows (250g) even when weight changed to 100g' - CONFIRMED."
+
   - task: "Daily Statistics Calculation"
     implemented: true
     working: true
