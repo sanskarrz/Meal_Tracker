@@ -366,6 +366,13 @@ CRITICAL: serving_weight must be the TOTAL weight in grams that the user is cons
         response_text = response.choices[0].message.content
         print(f"OpenAI Response: {response_text}")  # Debug log
         
+        if not response_text or response_text.strip() == "":
+            print("❌ Empty response from OpenAI!")
+            raise HTTPException(
+                status_code=500,
+                detail="AI returned empty response. Please try again."
+            )
+        
         # Try to extract JSON from response
         json_match = re.search(r'\{(?:[^{}]|\{[^{}]*\})*\}', response_text)
         if json_match:
