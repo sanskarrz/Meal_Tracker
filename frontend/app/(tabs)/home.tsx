@@ -228,11 +228,19 @@ export default function HomeScreen() {
       return;
     }
     
+    if (!editServingWeight.trim()) {
+      Alert.alert('Validation Error', 'Please enter serving weight in grams');
+      return;
+    }
+    
     setLoading(true);
     try {
       await axios.put(
         `${API_URL}/api/food/${editingEntry.id}`,
-        { serving_size: editServingSize },
+        { 
+          serving_size: editServingSize,
+          serving_weight: parseInt(editServingWeight)
+        },
         { headers: { Authorization: `Bearer ${token}` }, timeout: 10000 }
       );
       
