@@ -748,15 +748,17 @@ async def update_food_entry(entry_id: str, request: dict, current_user = Depends
             # Use the new weight if provided, otherwise use existing
             serving_weight_value = new_serving_weight if new_serving_weight else entry.get("serving_weight", 100)
             
-            # Create updated food name with new weight
-            # Format: "base_food_name (XXXg)" or use serving_description if it already has weight
-            if re.search(r'\d+g', serving_description):
-                # Serving description already has weight, use it
-                updated_food_name = f"{base_food_name} {serving_description}"
-            else:
-                # Add weight to food name
-                updated_food_name = f"{base_food_name} (approx. {serving_weight_value}g)"
+            # If only weight changed but not serving_size, generate new serving_size with updated weight
+            if new_serving_weight and not new_serving_size:
+                # Extract base description without weight
+                serving_desc_no_weight = re.sub(r'\s*\(?\d+g?\)?\s*', ' ', serving_description)
+                serving_desc_no_weight = re.sub(r'\s+', ' ', serving_desc_no_weight).strip()
+                # Create new serving description with updated weight
+                serving_description = f"{serving_desc_no_weight} ({serving_weight_value}g)"
             
+            # Create updated food name with new weight
+            # Always use the updated serving_weight_value, not old values
+            updated_food_name = f"{base_food_name} (approx. {serving_weight_value}g)"
             updated_food_name = re.sub(r'\s+', ' ', updated_food_name).strip()
             
             # Ask AI to recalculate nutrition based on new serving
