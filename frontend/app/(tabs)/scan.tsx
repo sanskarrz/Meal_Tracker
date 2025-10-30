@@ -31,6 +31,7 @@ export default function ScanScreen() {
   const [lastResult, setLastResult] = useState<any>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [servingSize, setServingSize] = useState('');
+  const [servingWeight, setServingWeight] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const { token } = useAuth();
   const cameraRef = useRef<any>(null);
