@@ -346,9 +346,9 @@ CRITICAL: serving_weight must be the TOTAL weight in grams that the user is cons
             """
             messages.append({"role": "user", "content": prompt})
         
-        # Call OpenAI API directly with gpt-4o model
+        # Call OpenAI API directly with GPT-5 model (latest, best for vision and reasoning)
         response = await client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-5",
             messages=messages,
             max_tokens=500,
             temperature=0.3
