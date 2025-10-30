@@ -332,7 +332,7 @@ export default function ScanScreen() {
                   <View style={styles.largeInputBox}>
                     <TextInput
                       style={styles.largeInput}
-                      placeholder="e.g., '2 rotis', '45g', '1 cup'"
+                      placeholder="e.g., '2 rotis (60g each)', 'Dairy Milk 45g'"
                       value={servingSize}
                       onChangeText={setServingSize}
                       placeholderTextColor="#999"
@@ -340,8 +340,23 @@ export default function ScanScreen() {
                     <Ionicons name="create-outline" size={24} color="#36B37E" />
                   </View>
                   
+                  {/* Section 4: Serving Weight (NEW) - Quick Edit in Grams */}
+                  <Text style={styles.confirmLabel}>Serving Weight (grams)</Text>
+                  <View style={styles.largeInputBox}>
+                    <Ionicons name="scale-outline" size={24} color="#36B37E" style={{marginRight: 12}} />
+                    <TextInput
+                      style={styles.largeInput}
+                      placeholder="e.g., '100', '45', '250'"
+                      value={servingWeight}
+                      onChangeText={setServingWeight}
+                      keyboardType="numeric"
+                      placeholderTextColor="#999"
+                    />
+                    <Text style={styles.weightUnit}>g</Text>
+                  </View>
+                  
                   <Text style={styles.confirmHint}>
-                    ✏️ Edit the details above before adding to your log
+                    ✏️ Edit serving size or weight above before adding to your log
                   </Text>
                   
                   {/* Large Confirm Button */}
