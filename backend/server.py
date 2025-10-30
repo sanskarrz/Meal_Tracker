@@ -525,6 +525,8 @@ async def analyze_food_image(request: FoodAnalysisRequest, current_user = Depend
             "carbs": nutrition_data.get("carbs", 0),
             "fats": nutrition_data.get("fats", 0),
             "image_base64": request.image_base64,
+            "serving_size": nutrition_data.get("serving_size", "1 serving"),
+            "serving_weight": nutrition_data.get("serving_weight", 100),
             "entry_type": "camera",
             "timestamp": datetime.utcnow(),
             "date": datetime.utcnow().strftime("%Y-%m-%d")
@@ -538,6 +540,8 @@ async def analyze_food_image(request: FoodAnalysisRequest, current_user = Depend
             "protein": nutrition_data.get("protein", 0),
             "carbs": nutrition_data.get("carbs", 0),
             "fats": nutrition_data.get("fats", 0),
+            "serving_size": nutrition_data.get("serving_size", "1 serving"),
+            "serving_weight": nutrition_data.get("serving_weight", 100),
             "confidence": nutrition_data.get("confidence", "medium")
         }
     except Exception as e:
