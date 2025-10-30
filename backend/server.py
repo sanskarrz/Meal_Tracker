@@ -730,32 +730,6 @@ async def update_food_entry(entry_id: str, request: dict, current_user = Depends
             }
         
         return {"message": "No updates provided"}
-            nutrition_data = await analyze_food_with_gemini(text_query=prompt)
-            
-            # Update the entry with new nutrition values AND new food name
-            update_data = {
-                "food_name": new_food_name,  # Smart food name based on serving
-                "serving_size": new_serving_size,
-                "calories": nutrition_data.get("calories", entry.get("calories", 0)),
-                "protein": nutrition_data.get("protein", entry.get("protein", 0)),
-                "carbs": nutrition_data.get("carbs", entry.get("carbs", 0)),
-                "fats": nutrition_data.get("fats", entry.get("fats", 0))
-            }
-            
-            result = food_entries_collection.update_one(
-                {"_id": ObjectId(entry_id)},
-                {"$set": update_data}
-            )
-            
-            if result.modified_count == 0:
-                raise HTTPException(status_code=400, detail="Failed to update entry")
-            
-            return {
-                "message": "Food entry updated successfully",
-                "updated_values": update_data
-            }
-        
-        return {"message": "No updates provided"}
     except Exception as e:
         print(f"Error updating entry: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error updating food entry: {str(e)}")
