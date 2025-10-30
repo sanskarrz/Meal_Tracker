@@ -125,6 +125,7 @@ export default function ScanScreen() {
 
       setLastResult(response.data);
       setServingSize(response.data.serving_size || '1 serving');
+      setServingWeight(response.data.serving_weight?.toString() || '100');
       setShowAddModal(true);
       
       // Trigger fade-in animation
