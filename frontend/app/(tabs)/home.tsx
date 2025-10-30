@@ -589,7 +589,7 @@ export default function HomeScreen() {
                         onChangeText={setEditServingSize}
                         placeholder="e.g., 2 rotis, Dairy Milk 45g, 1 cup"
                         placeholderTextColor="#999"
-                        editable={!loading}
+                        editable={!savingEdit}
                         autoCorrect={false}
                       />
                     </View>
@@ -610,7 +610,7 @@ export default function HomeScreen() {
                         placeholder="e.g., 100, 45, 250"
                         keyboardType="numeric"
                         placeholderTextColor="#999"
-                        editable={!loading}
+                        editable={!savingEdit}
                         autoCorrect={false}
                       />
                       <Text style={styles.weightUnit}>g</Text>
@@ -627,7 +627,7 @@ export default function HomeScreen() {
             <TouchableOpacity
               style={styles.saveButton}
               onPress={saveEdit}
-              disabled={loading}
+              disabled={savingEdit}
             >
               <LinearGradient
                 colors={['#36B37E', '#2A9D68']}
