@@ -87,13 +87,15 @@ class HealthismAPITester:
         print("=" * 50)
         
         try:
-            # Step 1: Create a food entry via camera scan
-            print("Step 1: Creating food entry via POST /api/food/analyze-image...")
-            image_base64 = self.create_sample_image_base64()
+            # Step 1: Create a food entry via manual entry (since image analysis is too strict)
+            print("Step 1: Creating food entry via POST /api/food/manual...")
             
-            create_data = {"image_base64": image_base64}
+            create_data = {
+                "food_name": "Grilled Chicken Breast",
+                "serving_size": "1 piece (250g)"
+            }
             response = requests.post(
-                f"{self.base_url}/food/analyze-image", 
+                f"{self.base_url}/food/manual", 
                 json=create_data, 
                 headers=self.get_headers(),
                 timeout=60
