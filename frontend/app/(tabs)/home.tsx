@@ -234,7 +234,7 @@ export default function HomeScreen() {
       return;
     }
     
-    setLoading(true);
+    setSavingEdit(true);
     try {
       await axios.put(
         `${API_URL}/api/food/${editingEntry.id}`,
@@ -258,7 +258,7 @@ export default function HomeScreen() {
         : error.response?.data?.detail || 'Failed to update meal. Please try again.';
       Alert.alert('Error', errorMsg);
     } finally {
-      setLoading(false);
+      setSavingEdit(false);
     }
   };
 
