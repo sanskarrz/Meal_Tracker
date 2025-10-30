@@ -33,6 +33,7 @@ interface FoodEntry {
   entry_type: string;
   timestamp: string;
   serving_size?: string;
+  serving_weight?: number;
 }
 
 interface DailyStats {
