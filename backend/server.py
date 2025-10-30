@@ -236,16 +236,27 @@ Be EXTREMELY accurate with brand detection and serving sizes. Your goal is to be
         if image_base64 and text_query:
             # Image + text query
             prompt = f"""{text_query}. 
+            
+            ANALYZE THE IMAGE CAREFULLY:
+            - Read all text visible on packaging (brand, product name, weight, MRP)
+            - Identify exact Indian market product if visible
+            - Determine quantity from visual cues
+            
             Return ONLY valid JSON: 
             {{
-                "food_name": "specific name with brand and weight if packaged",
-                "calories": number,
+                "food_name": "Exact product name with brand and weight if packaged, otherwise descriptive name",
+                "calories": number (as per Indian standards),
                 "protein": number in grams,
                 "carbs": number in grams,
                 "fats": number in grams,
-                "serving_size": "specific measurement with weight/volume/pieces",
+                "serving_size": "detailed serving description (e.g., 'Cadbury Dairy Milk 45g', '2 rotis (60g each)')",
+                "serving_weight": number (total weight in grams),
                 "confidence": "high/medium/low"
             }}
+            
+            Example:
+            - Image shows 2 rotis → serving_weight: 120
+            - Image shows Dairy Milk 45g → serving_weight: 45
             """
             messages.append({
                 "role": "user",
