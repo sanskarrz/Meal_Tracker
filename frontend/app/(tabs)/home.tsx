@@ -76,6 +76,7 @@ export default function HomeScreen() {
   const [editingEntry, setEditingEntry] = useState<FoodEntry | null>(null);
   const [editServingSize, setEditServingSize] = useState('');
   const [editServingWeight, setEditServingWeight] = useState('');
+  const [savingEdit, setSavingEdit] = useState(false);
   
   // Delete confirmation modal
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
