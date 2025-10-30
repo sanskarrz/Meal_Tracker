@@ -535,7 +535,12 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </View>
             
-            <ScrollView style={styles.modalScrollView} showsVerticalScrollIndicator={false}>
+            <ScrollView 
+              style={styles.modalScrollView} 
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+              nestedScrollEnabled={true}
+            >
               {editingEntry && (
                 <View style={styles.editContainer}>
                   {/* Food Name with Current Serving - Updates as you type */}
