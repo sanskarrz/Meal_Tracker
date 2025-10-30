@@ -1041,10 +1041,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    maxHeight: '80%',
+    maxHeight: '85%',
+    paddingTop: 24,
   },
   modalScrollView: {
-    maxHeight: 400,
+    maxHeight: 500,
     paddingHorizontal: 24,
   },
   modalHeader: {
