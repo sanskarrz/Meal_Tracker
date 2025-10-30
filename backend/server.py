@@ -655,7 +655,8 @@ async def get_today_entries(current_user = Depends(get_current_user)):
             "entry_type": entry["entry_type"],
             "timestamp": entry["timestamp"].isoformat(),
             "date": entry["date"],
-            "serving_size": entry.get("serving_size", "1 serving")
+            "serving_size": entry.get("serving_size", "1 serving"),
+            "serving_weight": entry.get("serving_weight", 100)
         }
         for entry in entries
     ]
