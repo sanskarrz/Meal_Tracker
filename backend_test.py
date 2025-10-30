@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for User-Reported Issues
-Testing specific problems:
-1. Serving weight always shows 100g after editing
-2. Food name doesn't update when serving weight changes
-3. Images not showing in home screen
+Backend API Testing Suite for Healthism Calorie Tracker
+CRITICAL TESTS - Verify fixes for food entry updates:
+1. Food Name Update on Weight Change
+2. Serving Size Update When Only Weight Changes  
+3. Image Persistence (Retest)
 """
 
 import requests
@@ -12,6 +12,7 @@ import json
 import base64
 import time
 from datetime import datetime
+import sys
 
 # Use production URL from frontend/.env
 BASE_URL = "https://nutritrack-plus-1.preview.emergentagent.com/api"
