@@ -576,17 +576,37 @@ export default function HomeScreen() {
                   <View style={styles.servingSizeSection}>
                     <Text style={styles.editSectionLabel}>Change Serving Size</Text>
                     <View style={styles.largeEditBox}>
-                      <Ionicons name="scale-outline" size={24} color="#36B37E" />
+                      <Ionicons name="pizza-outline" size={24} color="#36B37E" />
                       <TextInput
                         style={styles.largeEditInput}
                         value={editServingSize}
                         onChangeText={setEditServingSize}
-                        placeholder="e.g., 200g, 2 rotis, 300ml"
+                        placeholder="e.g., 2 rotis, Dairy Milk 45g, 1 cup"
                         placeholderTextColor="#999"
                       />
                     </View>
                     <Text style={styles.editInstruction}>
-                      💡 Type above - Food name will update automatically
+                      💡 Describe the serving (e.g., "2 rotis", "45g Dairy Milk")
+                    </Text>
+                  </View>
+                  
+                  {/* Serving Weight (grams) - NEW */}
+                  <View style={styles.servingSizeSection}>
+                    <Text style={styles.editSectionLabel}>Serving Weight (grams)</Text>
+                    <View style={styles.largeEditBox}>
+                      <Ionicons name="scale-outline" size={24} color="#36B37E" />
+                      <TextInput
+                        style={styles.largeEditInput}
+                        value={editServingWeight}
+                        onChangeText={setEditServingWeight}
+                        placeholder="e.g., 100, 45, 250"
+                        keyboardType="numeric"
+                        placeholderTextColor="#999"
+                      />
+                      <Text style={styles.weightUnit}>g</Text>
+                    </View>
+                    <Text style={styles.editInstruction}>
+                      ⚖️ Total weight in grams for easy tracking
                     </Text>
                   </View>
                 </View>
