@@ -691,7 +691,7 @@ async def delete_food_entry(entry_id: str, current_user = Depends(get_current_us
 
 @app.put("/api/food/{entry_id}")
 async def update_food_entry(entry_id: str, request: dict, current_user = Depends(get_current_user)):
-    """Update a food entry - recalculates nutrition based on new serving size"""
+    """Update a food entry - accepts serving_size and/or serving_weight"""
     try:
         # Get the existing entry
         entry = food_entries_collection.find_one({
@@ -702,32 +702,34 @@ async def update_food_entry(entry_id: str, request: dict, current_user = Depends
         if not entry:
             raise HTTPException(status_code=404, detail="Food entry not found")
         
+        update_data = {}
+        
         # Update serving size if provided
         new_serving_size = request.get("serving_size")
         if new_serving_size:
-            # Get base food type (remove quantities and old serving)
-            old_food_name = entry.get("food_name", "Unknown Food")
+            update_data["serving_size"] = new_serving_size
+        
+        # Update serving weight if provided
+        new_serving_weight = request.get("serving_weight")
+        if new_serving_weight:
+            update_data["serving_weight"] = int(new_serving_weight)
+        
+        # If we have updates, save them
+        if update_data:
+            result = food_entries_collection.update_one(
+                {"_id": ObjectId(entry_id)},
+                {"$set": update_data}
+            )
             
-            # Extract just the food type (e.g., "roti", "dal", "apple") from old name
-            # Remove common quantity words and parentheses content
-            import re
-            base_food_type = re.sub(r'\(.*?\)', '', old_food_name)  # Remove parentheses
-            base_food_type = re.sub(r'^\d+\s+', '', base_food_type)  # Remove leading numbers
-            base_food_type = re.sub(r'\s*(medium|small|large|big)\s*', ' ', base_food_type, flags=re.IGNORECASE)  # Remove size words
-            base_food_type = base_food_type.strip()
+            if result.modified_count == 0 and result.matched_count == 0:
+                raise HTTPException(status_code=400, detail="Failed to update entry")
             
-            # The new serving size entered by user IS the new food name
-            # Only append base food type if it's not already in the serving size
-            if base_food_type.lower() in new_serving_size.lower():
-                # User already included food type, use as is
-                new_food_name = new_serving_size
-            else:
-                # User only entered quantity/size, append food type
-                # e.g., "200g" + "dal" = "200g dal"
-                new_food_name = f"{new_serving_size} {base_food_type}".strip()
-            
-            # Recalculate nutrition based on the new serving
-            prompt = f"Provide accurate nutrition for {new_food_name} for Indian market."
+            return {
+                "message": "Food entry updated successfully",
+                "updated_values": update_data
+            }
+        
+        return {"message": "No updates provided"}
             nutrition_data = await analyze_food_with_gemini(text_query=prompt)
             
             # Update the entry with new nutrition values AND new food name
