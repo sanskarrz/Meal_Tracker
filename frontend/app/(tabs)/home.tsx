@@ -90,6 +90,13 @@ export default function HomeScreen() {
     loadData();
   }, []);
 
+  // Reload data when screen comes into focus (e.g., after adding from scan)
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [])
+  );
+
   useEffect(() => {
     if (!loading) {
       Animated.timing(fadeAnim, {
