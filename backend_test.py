@@ -1,25 +1,31 @@
 #!/usr/bin/env python3
 """
-FOCUSED Backend Testing for Camera Scanning with OpenAI Vision API
-Testing the critical camera scanning functionality that was switched from emergentintegrations to OpenAI SDK
+Backend API Testing for User-Reported Issues
+Testing specific problems:
+1. Serving weight always shows 100g after editing
+2. Food name doesn't update when serving weight changes
+3. Images not showing in home screen
 """
 
 import requests
 import json
 import base64
 import time
-from datetime import datetime, timedelta
-import sys
-import subprocess
+from datetime import datetime
 
-# Configuration
+# Use production URL from frontend/.env
 BASE_URL = "https://nutritrack-plus-1.preview.emergentagent.com/api"
-TEST_USER = {
-    "username": f"cameratest_{int(time.time())}",
-    "email": f"cameratest_{int(time.time())}@example.com", 
-    "password": "SecurePass123!",
-    "daily_calorie_goal": 2200
-}
+
+class HealthismAPITester:
+    def __init__(self):
+        self.base_url = BASE_URL
+        self.token = None
+        self.test_user = {
+            "username": f"testuser_{int(time.time())}",
+            "email": f"test_{int(time.time())}@example.com", 
+            "password": "testpass123"
+        }
+        self.created_entries = []
 
 # Test results storage
 test_results = {
