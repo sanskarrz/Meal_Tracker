@@ -315,8 +315,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Camera Scanning with OpenAI Vision"
-  stuck_tasks: []
+    - "Food Entry Update - Serving Weight and Name Consistency"
+  stuck_tasks:
+    - "Food Entry Update - Serving Weight and Name Consistency"
   test_all: false
   test_priority: "stuck_first"
 
