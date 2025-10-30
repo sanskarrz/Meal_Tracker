@@ -60,15 +60,24 @@ class HealthismAPITester:
         }
     
     def create_sample_image_base64(self):
-        """Create a small sample image in base64 format for testing"""
-        # Create a simple 1x1 pixel JPEG image
+        """Create a food-like image in base64 format for testing"""
         import io
-        from PIL import Image
+        from PIL import Image, ImageDraw
         
-        # Create a small red image
-        img = Image.new('RGB', (100, 100), color='red')
+        # Create a more food-like image (circular shape like a plate with food)
+        img = Image.new('RGB', (200, 200), color='white')
+        draw = ImageDraw.Draw(img)
+        
+        # Draw a plate (circle)
+        draw.ellipse([20, 20, 180, 180], fill='lightgray', outline='gray')
+        
+        # Draw some food items (circles representing rice/food)
+        draw.ellipse([60, 60, 140, 140], fill='wheat', outline='brown')  # Main food
+        draw.ellipse([70, 70, 90, 90], fill='orange', outline='darkorange')  # Vegetable
+        draw.ellipse([110, 80, 130, 100], fill='green', outline='darkgreen')  # Vegetable
+        
         buffer = io.BytesIO()
-        img.save(buffer, format='JPEG')
+        img.save(buffer, format='JPEG', quality=85)
         image_bytes = buffer.getvalue()
         return base64.b64encode(image_bytes).decode('utf-8')
     
