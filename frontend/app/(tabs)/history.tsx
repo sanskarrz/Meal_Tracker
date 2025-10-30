@@ -51,6 +51,13 @@ export default function HistoryScreen() {
     loadData();
   }, [selectedDate]);
 
+  // Reload data when screen comes into focus (e.g., after adding from scan)
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [selectedDate])
+  );
+
   const loadData = async () => {
     try {
       const dateStr = selectedDate.toISOString().split('T')[0];
