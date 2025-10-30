@@ -583,6 +583,8 @@ export default function HomeScreen() {
                         onChangeText={setEditServingSize}
                         placeholder="e.g., 2 rotis, Dairy Milk 45g, 1 cup"
                         placeholderTextColor="#999"
+                        editable={!loading}
+                        autoCorrect={false}
                       />
                     </View>
                     <Text style={styles.editInstruction}>
@@ -602,6 +604,8 @@ export default function HomeScreen() {
                         placeholder="e.g., 100, 45, 250"
                         keyboardType="numeric"
                         placeholderTextColor="#999"
+                        editable={!loading}
+                        autoCorrect={false}
                       />
                       <Text style={styles.weightUnit}>g</Text>
                     </View>
