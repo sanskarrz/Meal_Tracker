@@ -1153,6 +1153,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
+  weightUnit: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#36B37E',
+    marginLeft: 8,
+  },
   editInstruction: {
     fontSize: 12,
     color: '#666',
