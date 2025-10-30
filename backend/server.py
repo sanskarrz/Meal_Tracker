@@ -684,7 +684,8 @@ async def get_history(date: Optional[str] = None, current_user = Depends(get_cur
             "entry_type": entry["entry_type"],
             "timestamp": entry["timestamp"].isoformat(),
             "date": entry["date"],
-            "serving_size": entry.get("serving_size", "1 serving")
+            "serving_size": entry.get("serving_size", "1 serving"),
+            "serving_weight": entry.get("serving_weight", 100)
         }
         for entry in entries
     ]
