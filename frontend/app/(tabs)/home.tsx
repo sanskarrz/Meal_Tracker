@@ -216,6 +216,7 @@ export default function HomeScreen() {
   const openEditModal = (entry: FoodEntry) => {
     setEditingEntry(entry);
     setEditServingSize(entry.serving_size || '1 serving');
+    setEditServingWeight(entry.serving_weight?.toString() || '100');
     setEditModalVisible(true);
   };
 
