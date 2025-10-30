@@ -273,26 +273,46 @@ Be EXTREMELY accurate with brand detection and serving sizes. Your goal is to be
             
         elif image_base64:
             # Image only - camera scan
-            prompt = """Carefully identify this food item and provide nutritional information.
-            
-            Look at the image and identify:
-            1. What type of food is visible
-            2. Approximate portion size based on visual cues
-            3. If it's packaged food, try to identify the brand and package size
-            
-            Provide your best estimate based on what you can see.
-            
-            Return ONLY valid JSON:
-            {{
-                "food_name": "specific name - include brand and weight if visible, otherwise best estimate",
-                "calories": number,
-                "protein": number in grams,
-                "carbs": number in grams,
-                "fats": number in grams,
-                "serving_size": "specific measurement (grams, ml, pieces with weight)",
-                "confidence": "high/medium/low"
-            }}
-            """
+            prompt = """CAREFULLY ANALYZE THIS FOOD IMAGE:
+
+STEP 1 - READ ALL TEXT:
+- Look for brand names, product names, weight labels, MRP prices
+- Check nutritional panels on packaging
+- Identify any visible text that helps identify the exact product
+
+STEP 2 - IDENTIFY PRODUCT:
+- If packaged: Brand + Product + Exact Weight (e.g., "Cadbury Dairy Milk 45g", "Lay's Classic 52g")
+- If home-cooked: Quantity + Item + Weight (e.g., "2 rotis (60g each)", "1 plate biryani (250g)")
+- If fruits/vegetables: Quantity + Size + Weight (e.g., "1 medium apple (150g)")
+
+STEP 3 - ESTIMATE QUANTITY:
+- Look at visual cues: plate size, hand reference, packaging size
+- Count visible items accurately
+- Estimate weight based on standard Indian portions
+
+STEP 4 - CALCULATE SERVING WEIGHT:
+- Total weight in grams of what's visible
+- If "2 rotis (60g each)" → serving_weight = 120
+- If "Dairy Milk 45g" → serving_weight = 45
+
+STEP 5 - PROVIDE INDIAN NUTRITION VALUES:
+- Use FSSAI-approved values for branded products
+- Use typical Indian recipes for home-cooked food
+- Match values to what's sold in Indian market
+
+Return ONLY valid JSON:
+{{
+    "food_name": "Exact product with brand and weight OR descriptive name with quantity",
+    "calories": number (Indian standards),
+    "protein": number in grams,
+    "carbs": number in grams,
+    "fats": number in grams,
+    "serving_size": "detailed description (e.g., 'Cadbury Dairy Milk 45g', '2 rotis (60g each)', '1 bowl rice (150g)')",
+    "serving_weight": number (total grams - MANDATORY),
+    "confidence": "high/medium/low"
+}}
+
+CRITICAL: serving_weight must be the TOTAL weight in grams that the user is consuming."""
             messages.append({
                 "role": "user",
                 "content": [
