@@ -377,6 +377,13 @@ CRITICAL: serving_weight must be the TOTAL weight in grams that the user is cons
         json_match = re.search(r'\{(?:[^{}]|\{[^{}]*\})*\}', response_text)
         if json_match:
             nutrition_data = json.loads(json_match.group())
+            
+            # Handle "not_food" error from OpenAI
+            if nutrition_data.get("error") == "not_food":
+                raise HTTPException(
+                    status_code=400,
+                    detail=nutrition_data.get("message", "This is not a food item. Please capture an image of food.")
+                )
         else:
             # Fallback parsing if no JSON found
             nutrition_data = {
