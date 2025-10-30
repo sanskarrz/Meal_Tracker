@@ -350,7 +350,7 @@ CRITICAL: serving_weight must be the TOTAL weight in grams that the user is cons
         response = await client.chat.completions.create(
             model="gpt-5",
             messages=messages,
-            max_tokens=500,
+            max_completion_tokens=500,
             temperature=0.3
         )
         
