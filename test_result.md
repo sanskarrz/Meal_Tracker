@@ -318,11 +318,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Food Entry Update - Serving Weight and Name Consistency"
-  stuck_tasks:
-    - "Food Entry Update - Serving Weight and Name Consistency"
+    - "All critical backend tests completed"
+  stuck_tasks: []
   test_all: false
-  test_priority: "stuck_first"
+  test_priority: "high_first"
 
 agent_communication:
     - agent: "main"
