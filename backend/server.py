@@ -724,8 +724,14 @@ async def update_food_entry(entry_id: str, request: dict, current_user = Depends
         if new_serving_size or new_serving_weight:
             should_recalculate = True
             
-            # Build the query for AI
+            # Get original food name (remove old serving info)
             food_name = entry.get("food_name", "Unknown Food")
+            
+            # Extract base food name by removing weight references
+            import re
+            # Remove patterns like "(250g)", "250g", "(approx. 250g)", etc.
+            base_food_name = re.sub(r'\s*\(?(approx\.?\s*)?\d+g?\)?\s*', ' ', food_name)
+            base_food_name = re.sub(r'\s+', ' ', base_food_name).strip()
             
             # Use the new serving size if provided, otherwise use existing
             serving_description = new_serving_size if new_serving_size else entry.get("serving_size", "1 serving")
@@ -733,8 +739,19 @@ async def update_food_entry(entry_id: str, request: dict, current_user = Depends
             # Use the new weight if provided, otherwise use existing
             serving_weight_value = new_serving_weight if new_serving_weight else entry.get("serving_weight", 100)
             
+            # Create updated food name with new weight
+            # Format: "base_food_name (XXXg)" or use serving_description if it already has weight
+            if re.search(r'\d+g', serving_description):
+                # Serving description already has weight, use it
+                updated_food_name = f"{base_food_name} {serving_description}"
+            else:
+                # Add weight to food name
+                updated_food_name = f"{base_food_name} (approx. {serving_weight_value}g)"
+            
+            updated_food_name = re.sub(r'\s+', ' ', updated_food_name).strip()
+            
             # Ask AI to recalculate nutrition based on new serving
-            prompt = f"""Provide accurate nutritional information for: {food_name}
+            prompt = f"""Provide accurate nutritional information for: {base_food_name}
             
             Serving size: {serving_description}
             Serving weight: {serving_weight_value}g
@@ -754,8 +771,9 @@ async def update_food_entry(entry_id: str, request: dict, current_user = Depends
             # Get recalculated nutrition from AI
             nutrition_data = await analyze_food_with_gemini(text_query=prompt)
             
-            # Update with new values
+            # Update with new values including the updated food name
             update_data = {
+                "food_name": updated_food_name,
                 "serving_size": serving_description,
                 "serving_weight": int(serving_weight_value),
                 "calories": nutrition_data.get("calories", entry.get("calories", 0)),
