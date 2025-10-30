@@ -330,14 +330,17 @@ CRITICAL: serving_weight must be the TOTAL weight in grams that the user is cons
             # Text only
             prompt = f"""Provide accurate nutritional information for: {text_query}
             
+            Use Indian market standards and FSSAI-approved values.
+            
             Return ONLY valid JSON:
             {{
-                "food_name": "specific name with brand and weight/variant",
-                "calories": number,
+                "food_name": "specific name with brand and weight/variant if applicable",
+                "calories": number (Indian standards),
                 "protein": number in grams,
                 "carbs": number in grams,
                 "fats": number in grams,
-                "serving_size": "specific measurement (grams, ml, pieces)",
+                "serving_size": "specific measurement (e.g., '100g', '2 rotis (60g each)', '1 cup (150ml)')",
+                "serving_weight": number (total weight in grams),
                 "confidence": "high/medium/low"
             }}
             """
@@ -371,12 +374,23 @@ CRITICAL: serving_weight must be the TOTAL weight in grams that the user is cons
                 "carbs": 20,
                 "fats": 8,
                 "serving_size": "1 serving (weight not specified)",
+                "serving_weight": 100,
                 "confidence": "low"
             }
         
         # Ensure serving_size is present and specific
         if "serving_size" not in nutrition_data or nutrition_data["serving_size"] == "1 serving":
             nutrition_data["serving_size"] = "1 serving (weight not specified)"
+        
+        # Ensure serving_weight is present (default to 100g if not provided)
+        if "serving_weight" not in nutrition_data:
+            # Try to extract from serving_size
+            import re
+            weight_match = re.search(r'(\d+)\s*g', nutrition_data.get("serving_size", ""))
+            if weight_match:
+                nutrition_data["serving_weight"] = int(weight_match.group(1))
+            else:
+                nutrition_data["serving_weight"] = 100  # Default
         
         # Add (estimated) tag for low confidence
         if image_base64 and nutrition_data.get("confidence") == "low":
