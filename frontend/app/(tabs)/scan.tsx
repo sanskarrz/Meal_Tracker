@@ -161,13 +161,19 @@ export default function ScanScreen() {
       return;
     }
     
+    if (!servingWeight.trim()) {
+      Alert.alert('Validation Error', 'Please enter serving weight in grams');
+      return;
+    }
+    
     setIsAnalyzing(true);
     try {
-      // Update the already-saved entry with the confirmed serving size
+      // Update the already-saved entry with the confirmed serving size and weight
       await axios.put(
         `${API_URL}/api/food/${lastResult.id}`,
         { 
-          serving_size: servingSize
+          serving_size: servingSize,
+          serving_weight: parseInt(servingWeight)
         },
         { 
           headers: { Authorization: `Bearer ${token}` },
@@ -180,6 +186,7 @@ export default function ScanScreen() {
       setLastResult(null);
       setCapturedImage(null);
       setServingSize('');
+      setServingWeight('');
       
       // Navigate to home to see the entry
       router.push('/(tabs)/home');
