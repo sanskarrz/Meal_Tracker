@@ -740,6 +740,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+  weightUnit: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#36B37E',
+    marginLeft: 8,
+  },
   addToLogButton: {
     width: '100%',
     borderRadius: 12,
